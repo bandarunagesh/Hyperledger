@@ -8,7 +8,7 @@ check:
 sudo systemctl status ssh.service
 
 Node:
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt install nodejs
 
 docker:
@@ -58,4 +58,28 @@ docker -v
 docker-compose -v
 go version
 python --version
+
+JQ:
+sudo apt-get install jq
+
+To configure the and resolve the downloa issues in future steps: 
+Move to the requird directory where the package.json available
+sudo apt-get install node-gyp
+npm install --unsafe-perm
+
+Incase if you install the latest verions of node (10.x), then we need to downgrade to 8.x as fabric now do not suppor 9.x and later
+steps:
+sudo apt-get update
+sudo apt-get install build-essential libssl-dev
+curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh -o install_nvm.sh
+nano install_nvm.sh
+bash install_nvm.sh
+source ~/.profile
+nvm ls-remote
+nvm install 8.9.4
+nvm use 8.9.4
+node -v
+
+
+
 

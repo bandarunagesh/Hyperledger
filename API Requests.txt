@@ -1,0 +1,109 @@
+Register User in Org1:
+curl -s -X POST http://localhost:4000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=nagesh&orgName=Org1'
+
+Org1 Token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2NDE2MTQsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDU2MTR9.hZtWQbqDz1Jrok49HH7ANijpvWpC63eI3_W-7n6zzzo
+
+Register User in Org2:
+curl -s -X POST http://localhost:4000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=raju&orgName=Org2'
+
+Token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk2MjIsInVzZXJuYW1lIjoicmFqdSIsIm9yZ05hbWUiOiJPcmcyIiwiaWF0IjoxNTQ1NjAzNjIyfQ.e9SGkq5bbR_ka8GcXXU8FlGhpn-X-jTfjexVMeM-Pe4
+
+
+
+Invoke Code:
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes/mycc \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "content-type: application/json" \
+  -d '{
+	"fcn":"move",
+	"args":["a","b","50"]
+}'
+
+Query:
+curl -s -X GET \
+  "http://localhost:4000/channels/mychannel/chaincodes/mycc?peer=peer0.org1.example.com&fcn=query&args=%5B%22a%22%5D" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "content-type: application/json"
+
+
+
+Install New Chain Code (Org1):
+curl -s -X POST \
+  http://localhost:4000/chaincodes \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "content-type: application/json" \
+  -d '{
+	"peers": ["peer0.org1.example.com","peer1.org1.example.com"],
+	"chaincodeName":"patient",
+	"chaincodePath":"/home/ramya/blockchain/fabric-samples/balance-transfer/artifacts/src/github.com/patient/node",
+	"chaincodeType":"node",
+	"chaincodeVersion":"v0"
+}'
+
+Install New Chain Code (Org2):
+curl -s -X POST \
+  http://localhost:4000/chaincodes \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk2MjIsInVzZXJuYW1lIjoicmFqdSIsIm9yZ05hbWUiOiJPcmcyIiwiaWF0IjoxNTQ1NjAzNjIyfQ.e9SGkq5bbR_ka8GcXXU8FlGhpn-X-jTfjexVMeM-Pe4" \
+  -H "content-type: application/json" \
+  -d '{
+	"peers": ["peer0.org2.example.com","peer1.org2.example.com"],
+	"chaincodeName":"patient",
+	"chaincodePath":"/home/ramya/blockchain/fabric-samples/balance-transfer/artifacts/src/github.com/patient/node",
+	"chaincodeType":"node",
+	"chaincodeVersion":"v0"
+}'
+
+
+Instantiate New chaincode:
+
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "content-type: application/json" \
+  -d '{
+	"chaincodeName":"patient",
+	"chaincodeVersion":"v0",
+         "chaincodeType":"node",
+	"args":["marble1","blue","35","tom"]
+}'
+
+
+Installed chain codes in peer
+curl -s -X GET \
+  "http://localhost:4000/chaincodes?peer=peer1.org1.example.com&type=instantiated" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2MzEyNTksInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU1OTUyNTl9.9a2bLEEQmafpnMH2N9-QhgSrIjjTnZgs4Ft7wTCOvT0" \
+  -H "content-type: application/json"
+
+
+
+curl -s -X GET \
+  "http://localhost:4000/chaincodes?peer=peer1.org2.example.com&type=instantiated" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "content-type: application/json"
+
+
+
+Query:
+curl -s -X GET \
+  "http://localhost:4000/channels/mychannel/chaincodes/patient?peer=peer0.org1.example.com&fcn=readMarble&args=%5B%221234%22%5D" \
+  -H "authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2NDYwNTIsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MTAwNTJ9.G4ReW7Jo-0bcXES4RLrPZom7QzIFZ-tQBGmkCaFgXhY" \
+  -H "content-type: application/json"
+
+
+
+
+Invoke new chain code:
+
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes/mycc \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2MzEyNTksInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU1OTUyNTl9.9a2bLEEQmafpnMH2N9-QhgSrIjjTnZgs4Ft7wTCOvT0" \
+  -H "content-type: application/json" \
+  -d '{
+	"peers": ["peer0.org1.example.com","peer0.org2.example.com"],
+	"fcn":"initMarble",
+	"args":["marble2","red","50","tom"]
+}'
+
