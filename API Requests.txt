@@ -88,8 +88,8 @@ curl -s -X GET \
 
 Query:
 curl -s -X GET \
-  "http://localhost:4000/channels/mychannel/chaincodes/patient?peer=peer0.org1.example.com&fcn=readMarble&args=%5B%221234%22%5D" \
-  -H "authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2NDYwNTIsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MTAwNTJ9.G4ReW7Jo-0bcXES4RLrPZom7QzIFZ-tQBGmkCaFgXhY" \
+  "http://localhost:4000/channels/mychannel/chaincodes/patient?peer=peer0.org1.example.com&fcn=readPatient&args=%5B%221234%22%5D" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2NzY1NTcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2NDA1NTd9.hYujjN3DHsnT1XobxP5UHLacUazmox1_d6OK1n4ozUI" \
   -H "content-type: application/json"
 
 

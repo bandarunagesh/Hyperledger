@@ -1,0 +1,11 @@
+1. cryptogen tool used to generate certificaters using  X.509 standrads, it uses configuration in crypto-config.yaml
+2. Organization is provisioned a unique root certificate (ca-cert)
+3. a participating Member would use its own Certificate Authority
+4. Transactions and communications within Hyperledger Fabric are signed by an entity’s private key (keystore), and then verified by means of a public key (signcerts)
+
+MSP:
+5. MSP (Membership Service Providers) - It takes care of Identity validation, signature generation and validation
+6. A Hyperledger Fabric blockchain network can be governed by one or more MSPs
+7. MSP configuration should be locally at each peer, orderer and channel
+8. MSP ID should be unque accross the consortium
+9. 
