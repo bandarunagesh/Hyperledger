@@ -8,4 +8,119 @@ MSP:
 6. A Hyperledger Fabric blockchain network can be governed by one or more MSPs
 7. MSP configuration should be locally at each peer, orderer and channel
 8. MSP ID should be unque accross the consortium
-9. 
+9. MSP parameters follow RFC5280 rules
+19. What does it contains:
+	List of self signed certificates (X.509) - usually call it as root of trust
+	List of X.509 certificates to represent intermediate CAs, these certificates ought to be certified by exactly one of the certificates in the root of trust
+	Administrators of this MSP - authorized to request changes to this MSP configuration (root CAs, intermediate CAs)
+	A list of Organizational Units that valid members of this MSP should include in their X.509 certificate
+	A list of certificate revocation lists (CRLs) 
+	Self Signed TLS certificate
+	TLS CAs
+	
+20. Verification
+	The signing key used for signing by the node (ECDSA keys are supported)
+	The node’s X.509 certificate
+	MSP identities never expire, they can only be revoked by adding them to the appropriate CRLs
+	currently no support for enforcing revocation of TLS certificates
+
+12. MSP Identity Validity Rules
+	 rCA is the root of a certification tree
+	 iCAs or of user-certificates
+	 Certificates signed by internal nodes will be rejected
+
+13. How to generate MSP certificates and their signing keys?
+	Create MSP configuration
+	Generate X.509 Certificates
+	Application can use OpenSSL
+	Hyperledger Fabric does not have support for certificates and RSA Keys
+	cryptogen or Hyperledger CA tool can be used to generate certificates
+
+14. MSP setup on the peer & orderer side
+	It have several folders under it (location would be like '/home/ramya/blockchain/fabric-samples/basic-network/crypto-config/ordererOrganizations/example.com/msp')
+	admincerts - administrator certifate
+	cacerts - root CA’s certificate
+	intermediatecerts (Optional) - intermediate CA’s certificate
+	config.yaml (Optional) - configure the supported Organizational Units and identity classifications
+	crls (Optional) - list of the considered CRLs
+	keystore (Private key) - node’s signing key, currently RSA Keys are not supported
+	signcerts (Public Key) - node’s X.509 certificate
+	tlscacerts (Optional) -  TLS root CA’s certifate
+	tlsintermediatecerts (Optional) - intermediate TLS CA’s certifate
+	
+	Reconfiguration is posible manually, the peer and orderer process needs to restart to affect this.
+15. Identity Classification
+	it classify into two categories i.e. clientns and peers
+	Client -  submits transactions, queries peers
+	Peers - endorses or commits transactions
+	
+16. Channel MSP setup
+	Genesis block would be provided to orderer to validate all the certificates at startup
+	
+17. Best Practices
+	One to One Mapping between Organization and MSP's
+	In case of exceptions:
+	One organization employing various MSPs
+		Peer can hold only one MSP
+		it will not recognize the identity from other MSP peers in same Organization
+	Multiple organizations using a single MSP
+		
+		
+Cryptogen	
+	Cryptogen is an utility for generating Hyperledger Fabric key material. It is mainly meant to be used for testing environment.
+	Generate Keys for the network:
+	cryptogen generate [flags --output=OUTPUT_LOCATION --config=CONFIG_LOCATION]
+	Exten the network:
+	cryptogen extend [--output=OUTPUT_LOCATION --config=CONFIG_LOCATION]
+	
+	
+Hyperledger CA:
+	Hyperledger CA is certificate authority for Fabric
+	It provides below features
+		registration of identities, or connects to LDAP as the user registry
+		issuance of Enrollment Certificates (ECerts)
+		certificate renewal and revocation
+	It does have both server and client
+	We can interact with CA server through either CA Client or SDK
+	All communication to CA Server via REST API
+	All Hyperledger CA Servers share same database for keeping track of identity and certificates
+	
+
+Gossip data dissemination protocol:
+Gossip-based broadcasting operates by peers receiving messages from other peers on the channel, and then forwarding these messages to a number of randomly selected peers
+For dissemination of new blocks, the leader peer on the channel pulls the data from the ordering service and initiates gossip dissemination to peers in its own organization.
+	Peers leverage gossip to broadcast ledger and channel data in a scalable fashion
+	Gossip message is continuous
+	each peer on a channel is constantly receiving current and consistent ledger data from multiple peers
+	Peers affected by delays, network partitions, or other causes resulting in missed blocks will eventually be synced
+	Three primary functions of this protocal:
+		Manages peer discovery and channel membership
+		Disseminates ledger data across all peers on a channel
+		Bring newly connected peers up to speed
+	Leader election:
+		Static or Dynamic
+	Anchor peers:
+		Anchor peers are used by gossip to make sure peers in different organizations know about each other
+	Gossip messaging:
+		Online peers indicate their availability by continually broadcasting “alive” messages
+		They communicate though public key infrastructure (PKI) ID and the signature of the sender over the message
+		“dead” peer is eventually purged from channel membership
+		peers on one channel cannot message or share information on any other channel
+		Through messag routing policies multi channel peers share information 
+		
+
+
+
+Fabric Installation:
+1. Binaries
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release/scripts/bootstrap-1.0.0.sh | bash
+
+
+	
+	
+Example to experimement
+1. Gossip protocal
+		bring down one peer and perform some transactions
+		bring up peer and see if it copies data
+		
+Continue Read From :configtxgen
