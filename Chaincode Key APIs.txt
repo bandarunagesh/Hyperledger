@@ -1,0 +1,180 @@
+1.An important interface that you can use when writing your chaincode is defined by Hyperledger Fabric - ChaincodeStub and ChaincodeStubInterface.
+ChaincodeStub:
+	provides functions that allow you to interact with the underlying ledger to query, update, and delete assets
+
+methods:
+	Init - Called when a chaincode receives an instantiate or upgrade transaction (initialize any application state).
+	Invoke - process any transaction proposals
+
+Steps:
+1. Chain code has to be installed first on the peer
+2. instantiate the chain code on the peer
+3. invoke  or query the chain code
+
+Chain code development:
+1. Import required libs
+	package main
+
+		import (
+
+		"fmt"
+
+		"github.com/hyperledger/fabric/core/chaincode/shim"
+
+		"github.com/hyperledger/fabric/protos/peer"
+
+		)
+		 
+Explanation of dependencies:
+fmt - contains Println for debugging/logging
+github.com/hyperledger/fabric/core/chaincode/shim - contains the definition for the chaincode interface and the chaincode stub, which you will need to interact with the ledger, as we described in the Chaincode Key APIs section
+github.com/hyperledger/fabric/protos/peer - contains the peer protobuf package.
+
+2. Create basic chain code functions
+	type SampleChaincode struct {
+
+	}
+
+3. create Init Method
+=====================Code================================
+		func (t *SampleChaincode) Init(stub shim.ChainCodeStubInterface) peer.Response {
+
+		// Get the args from the transaction proposal
+
+		   args := stub.GetStringArgs()
+
+		if len(args) != 2 {
+
+		return shim.Error("Incorrect arguments. Expecting a key and a value")
+
+		}
+
+		// We store the key and the value on the ledger
+
+		err := stub.PutState(args[0], []byte(args[1]))
+
+		if err != nil {
+
+		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+
+		}
+
+		return shim.Success(nil)
+
+
+		}
+=====================Code================================
+4. Create Invoke Method
+
+This method is called when a transaction is proposed by a client application.
+
+=====================Code================================
+		func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
+
+		// Extract the function and args from the transaction proposal
+
+		fn, args := stub.GetFunctionAndParameters()
+
+		var result string
+
+		var err error
+
+		if fn == "set" {
+
+		result, err = set(stub, args)
+
+		} else { // assume 'get' even if fn is nil
+
+		result, err = get(stub, args)
+
+		}
+
+		if err != nil { //Failed to get function and/or arguments from transaction proposal
+
+		return shim.Error(err.Error())
+
+		}
+
+		// Return the result as success payload
+
+		return shim.Success([]byte(result))
+
+		}
+=====================Code================================
+
+There are two basic actions a client can invoke: get and set.
+
+The get method will be used to query and return the value of an existing asset.
+The set method will be used to create a new asset or update the value of an existing asset.
+To start, we’ll call GetFunctionandParameters to isolate the function name and parameter variables. Each transaction is either a set or a get. Let's first look at how the set method is implemented:
+
+	func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+
+	if len(args) != 2 {
+
+	return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+
+	}
+
+	err := stub.PutState(args[0], []byte(args[1]))
+
+	if err != nil {
+
+	return "", fmt.Errorf("Failed to set asset: %s", args[0])
+
+	}
+
+	return args[1], nil
+
+	}
+
+ The set method will modify the world state to include the key/value pair specified. If the key exists, it will override the value with the new one, using the PutState method; otherwise, a new asset will be created with the specified value.
+Next, let's look at how the get method is implemented: 
+
+		func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+
+		if len(args) != 1 {
+
+		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+
+		}
+
+		value, err := stub.GetState(args[0])
+
+		if err != nil {
+
+		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+
+		}
+
+		if value == nil {
+
+		return "", fmt.Errorf("Asset not found: %s", args[0])
+
+		}
+
+		return string(value), nil
+
+		}
+		
+The get method will attempt to retrieve the value for the specified key. If the application does not pass in a single key, an error will be returned; otherwise, the GetState method will be used to query the world state for the specified key. If the key has not yet been added to the ledger (and world state), then an error will be returned; otherwise, the value that was set for the specified key is returned from the method.
+
+Main Function:
+The last piece of code in this sample is the main function, which will call the Start function. The main function starts the chaincode in the container during instantiation.
+
+		func main() {
+
+		err := shim.Start(new(SampleChaincode))
+
+		if err != nil {
+
+		fmt.Println("Could not start SampleChaincode")
+
+		} else {
+
+		fmt.Println("SampleChaincode successfully started")
+
+		}
+
+		}
+

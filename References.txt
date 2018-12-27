@@ -1,0 +1,10 @@
+1. End to End hyperledger overview, interviews, all platforms
+https://courses.edx.org/courses/course-v1:LinuxFoundationX+LFS171x+3T2017/courseware/fc181cbff0d64cee85eafc41d3617d89/f95572c931024f4dbe4945e0a9fb46ec/?child=first
+
+2. Tuna Fish App example:
+https://github.com/hyperledger/education/tree/master/LFS171x/fabric-material/tuna-app
+git clone https://github.com/hyperledger/education.git
+
+
+3. EDx Course - very good
+https://courses.edx.org/courses/course-v1:LinuxFoundationX+LFS171x+3T2017/courseware/f0db5224eb0e4bbb8cc1e93a6819012c/76a52d35a9f848d7a6313e7a45c4e1db/?child=first

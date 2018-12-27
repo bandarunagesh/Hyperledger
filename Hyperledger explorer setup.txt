@@ -1,0 +1,3 @@
+
+enter the cli mode
+sudo mysql -u root

@@ -1,3 +1,9 @@
+
+Install Ubuntu and copy below file to home location and run it, is it takes care of the install pre-requisites for hyerledger fabric.
+
+Nettool:
+sudo apt install net-tools
+
 Curl:
 sudo apt-get install curl
 
@@ -36,8 +42,6 @@ Wget:
 sudo apt-get install wget
 
 Go:
-mkdir go
-cd go
 wget https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz
 tar xvzf go1*.tar.gz
 
@@ -51,6 +55,9 @@ source ~/.bashrc
 Python:
 sudo apt-get install python
 
+JQ:
+sudo apt-get install jq
+
 Final Check:
 node -v
 npm -v
@@ -58,11 +65,9 @@ docker -v
 docker-compose -v
 go version
 python --version
+jq --version
 
-JQ:
-sudo apt-get install jq
-
-To configure the and resolve the downloa issues in future steps: 
+To configure the and resolve the download issues in future steps: 
 Move to the requird directory where the package.json available
 sudo apt-get install node-gyp
 npm install --unsafe-perm

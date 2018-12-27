@@ -1,0 +1,85 @@
+Distributed Ledger Technology (DLT):
+	A distributed ledger is a type of data structure which resides across multiple computer devices, generally spread across locations or regions.
+	Components:
+		data model - current state of the ledger
+		language of transactions - changes the ledger state
+		protocol - consensus
+
+Blockchains:
+	"A blockchain is a peer-to-peer distributed ledger forged by consensus, combined with a system for "smart contracts" and other assistive technologies."
+	it consist of two components:
+		Smart contracts
+		Consensus
+
+Block:
+	block consist of below things:
+		reference to previous block
+		The proof of work (nounce)
+		timestamp
+		Markle tree root of transaction
+		
+Merkle Tree:
+	binary hashes tree
+	anti-temper mechanism to ensure larger data has not been changed
+	each block refers to previous block and estblish a tree strecture in hierarchy mannger. so when someone wants to chang a value in particluar block needs to go though all previous blocks and change until genesis block
+
+Transactions:	
+	The record of an event, cryptographically secured with a digital signature, that is verified, ordered, and bundled together into blocks, form the transactions in the blockchain
+	
+Differences between Blockchains and Databases:
+	blockchain is write only strecture, there is no administrator permission to edit blocks. these are decenterlized applications
+	In database administractor can modify data or strecture of the data. centerlized applications
+
+Type of blockchains:
+public (Bitcoin or Ethereum) and permissioned enterprize blockchains(Hyperledger)
+
+
+Peer-to-Peer Network Architecture:
+	Usually current technologies built based on client-server architecture. but blockchain is build on peer to peer 
+
+Immutability of Data:
+
+Smart Contracts:
+Smart contracts are simply computer programs that execute predefined actions when certain conditions within the system are met
+
+Consensus Algorithms:
+	achieve current state of data on the system
+
+Proof of Work (PoW)
+The Proof of Work consensus algorithm involves solving a computational challenging puzzle in order to create new blocks in the Bitcoin blockchain. 
+
+Proof of Stake (PoS):
+The Proof of Stake algorithm is a generalization of the Proof of Work algorithm. they validate the transactions to earn a transaction fee
+node selection  depends on the amount of stake held
+
+Proof of Elapsed Time (PoET):
+Developed by Intel, the Proof of Elapsed Time consensus algorithm emulates the Bitcoin-style Proof of Work. 
+PoET consensus algorithm is a hybrid of a random lottery and first-come-first-serve basis.
+
+
+Simplified Byzantine Fault Tolerance (SBFT):
+The basic idea involves a single validator who bundles proposed transactions and forms a new block. 
+the validator is a known party
+Consensus is achieved as a result of a minimum number of other nodes in the network ratifying the new block
+the number of nodes that must reach consensus is 2f+1 in a system containing 3f+1 nodes, where f is the number of faults in the system
+ 
+Proof of Authority (PoA):
+ It uses a set of 'authorities', which are designated nodes that are allowed to create new blocks and secure the ledger.
+ 
+ 
+Other blockchain technologies:
+chain core(Chain.com) - for financial service institutions
+Corda R3 - leagal agreements between businesses
+Quorum (JP Morgan) - data privacy, voting based consesnus algorithm
+
+
+IOTA:
+the platform entails a generalization of the blockchain protocol (the technology called Tangle) that sits at the backend of the IOTA platform).
+
+ 
+
+
+
+
+	
+	
