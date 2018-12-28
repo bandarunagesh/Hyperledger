@@ -2,13 +2,12 @@ Register User in Org1:
 curl -s -X POST http://localhost:4000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=nagesh&orgName=Org1'
 
 Org1 Token:
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2NDE2MTQsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDU2MTR9.hZtWQbqDz1Jrok49HH7ANijpvWpC63eI3_W-7n6zzzo
-
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU5NjE2MzksInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU5MjU2Mzl9.Chb077zAJA_yrQ67I2jqobeDqkNrewSiY1Mw_kaqtNY
 Register User in Org2:
 curl -s -X POST http://localhost:4000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=raju&orgName=Org2'
 
 Token:
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk2MjIsInVzZXJuYW1lIjoicmFqdSIsIm9yZ05hbWUiOiJPcmcyIiwiaWF0IjoxNTQ1NjAzNjIyfQ.e9SGkq5bbR_ka8GcXXU8FlGhpn-X-jTfjexVMeM-Pe4
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU5NjE2NDEsInVzZXJuYW1lIjoiQmFycnkiLCJvcmdOYW1lIjoiT3JnMiIsImlhdCI6MTU0NTkyNTY0MX0.a3jbDzq6y0bIKVDC8D4zBUtqdEEjgvCE9_nN_jsO3WE
 
 
 
@@ -33,27 +32,27 @@ curl -s -X GET \
 Install New Chain Code (Org1):
 curl -s -X POST \
   http://localhost:4000/chaincodes \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU5NTIwMTMsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU5MTYwMTN9.BMFnmEKN_iWhfHUMcKb5E40p00A648AnT6vXaFNf2vs" \
   -H "content-type: application/json" \
   -d '{
 	"peers": ["peer0.org1.example.com","peer1.org1.example.com"],
-	"chaincodeName":"patient",
-	"chaincodePath":"/home/ramya/blockchain/fabric-samples/balance-transfer/artifacts/src/github.com/patient/node",
+	"chaincodeName":"recon",
+	"chaincodePath":"/home/seeraj/blockchain/fabric-samples/balance-transfer/artifacts/src/github.com/reconpoc/node",
 	"chaincodeType":"node",
-	"chaincodeVersion":"v0"
+	"chaincodeVersion":"v3"
 }'
 
 Install New Chain Code (Org2):
 curl -s -X POST \
   http://localhost:4000/chaincodes \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk2MjIsInVzZXJuYW1lIjoicmFqdSIsIm9yZ05hbWUiOiJPcmcyIiwiaWF0IjoxNTQ1NjAzNjIyfQ.e9SGkq5bbR_ka8GcXXU8FlGhpn-X-jTfjexVMeM-Pe4" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU5NTIwMTMsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU5MTYwMTN9.BMFnmEKN_iWhfHUMcKb5E40p00A648AnT6vXaFNf2vs" \
   -H "content-type: application/json" \
   -d '{
 	"peers": ["peer0.org2.example.com","peer1.org2.example.com"],
-	"chaincodeName":"patient",
-	"chaincodePath":"/home/ramya/blockchain/fabric-samples/balance-transfer/artifacts/src/github.com/patient/node",
+	"chaincodeName":"recon",
+	"chaincodePath":"/home/ramya/blockchain/fabric-samples/balance-transfer/artifacts/src/github.com/reconpoc/node",
 	"chaincodeType":"node",
-	"chaincodeVersion":"v0"
+	"chaincodeVersion":"v2"
 }'
 
 
@@ -61,11 +60,11 @@ Instantiate New chaincode:
 
 curl -s -X POST \
   http://localhost:4000/channels/mychannel/chaincodes \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU5NTIwMTMsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU5MTYwMTN9.BMFnmEKN_iWhfHUMcKb5E40p00A648AnT6vXaFNf2vs" \
   -H "content-type: application/json" \
   -d '{
-	"chaincodeName":"patient",
-	"chaincodeVersion":"v0",
+	"chaincodeName":"recon",
+	"chaincodeVersion":"v2",
          "chaincodeType":"node",
 	"args":["marble1","blue","35","tom"]
 }'

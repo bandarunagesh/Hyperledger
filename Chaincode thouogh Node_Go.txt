@@ -1,0 +1,130 @@
+** This document provides in detail information to write the chaincode though nodeSK and also comparision among node and go
+
+Node:
+1. Your first line in the chain code is 'use strict', have you ever wondered why we need to write this? as usual we just copy code and provide less focus on few things. 
+but it is very important to know each and every deatail on the each line of code and see what it is doing.
+
+The "use strict" is a directive was new in ECMAScript version 5 (EC5), it is not a statement.
+if we define this in our code, then  you can not, for example, use undeclared variables.
+All modern browsers support "use strict" except Internet Explorer 9 and lower:
+
+2. Your next few lines would be importing required libraries.
+
+========================================
+const shim = require('fabric-shim');
+========================================
+
+'fabric-shim' is an chain code interface to implement chain code in the hyperledger fabric. node is going to use this lib to interact with native hyperledger Shim calss to handle requests. this Shim has been written in Go languag. we just use the predefined classes written in the shim and we use thoses as part of our logic creation.
+This shim has to implement two methods i.e Init and and Invoke
+
+=====================================
+const util = require('util');
+=====================================
+
+The util module is primarily designed to support the needs of Node.js' own internal APIs. However, many of the utilities are useful for application and module developers as well.
+
+Now, lets start the real chain code class, what ever logic we implement we need to do that in the chaincode class main class.
+
+=================================
+let Chaincode = class {
+
+}
+==================================
+
+Now, we need to define INIT method to run as and when a chain code is being instantiate(Boot up)/Upgrade 
+Note: You might have observed we have use async before INIT function, this is the beauty of node. progammers uses heavely these asynch functions alot in node. it means run the code and do not wait for results and move on to other lines. as and when we get the results node event loop handles and provide the results.
+===================================
+async Init(stub){
+        
+    }
+==================================
+you can see we have used 'stub' this  used to call APIs to access to the ledger services, transaction context, or to invoke other chaincodes.
+
+===================================
+let ret = stub.getFunctionAndParameters();
+===================================
+user might have passed the parameters (details) to chain code to process the logic, that information can be obtained through 'getFunctionAndParameters' function in stub class
+We can process our own logic after we get the details, but in this coode we do not want to do anything with init, so just moving ahead
+
+=================================
+console.log(ret);
+console.log('================= Instantiated Chain Code =========')
+===================================
+We are showing the details got from the above  method in the console for the user verification
+
+=============================
+return shim.sucess();
+=============================
+if the program reach end of this line means the program executed sucessfully.
+With this we completed init
+
+Now, lets see how Invoke works
+below is the empty function to write our code on invoke. when client submit a transaction then it calls this invoke function and runs the chaincode
+=======================================
+  async Invoke(stub){
+        
+    }
+=======================================
+mainly, this invoke needs 3 parameters, chaincode name, arguments, channel name.
+before we move further, we need to generate a transaction id to identify the transaction and use it for further references. getTxID is the function in stub class to generate transaction id
+
+=======================================
+console.log(`Transaction ID: ${stub.getTxID()}`)
+========================================
+we use native node util package to do several things (you can see the available functionalities in the node website). let us discuss one of the use case. we just need to see what is being passed by the client in this console. so we can use util to format the input and display in console.
+now we are using util format function, this works like printf. this function take two arguments, one is formating model and the other is input.
+here, %j means show the output in Json format
+======================================
+console.info(util.format('Args: %j',stub.getArgs()));
+======================================
+
+now, we need to get what has been entered by user, usually he will provide us chaincode name, channel name and function to run along with parameters(args).
+we also print the ret object in console
+===========================================
+let ret = stub.getFunctionAndParameters();
+console.info(ret);
+===========================================
+
+get the chain code function name passed by client
+=============================================
+let method = ret.fnc;
+=============================================
+Check to see if user has passed any mthod or not, if he did not pass anything return error with comment in the console
+below is the base condition to check this.
+============================================
+if(!method){
+            
+        }
+=============================================
+now, let us implment some code in it, so below code catch incase user has not give correct method or empty.
+also, we are throwing an error manually, so that shim can error out the chain code otherwise this invoke give sucess will impact chain code propsal and block will be commit too the chain
+============================================
+let method = ret.fnc;
+        if(!method){
+            console.info(`no function of name: ${ret.fnc}`);    
+			throw new Error(`Received unknow function ${ret.fcn} innovacatoin`);
+        }
+=============================================
+
+Now, let us handle if user has passed correct method.
+we would like to use try and catch mechnism. 
+you can see we are using the method variable we got eariler here to define the method name and passing the parameters to it.
+so, corresponding method in the chaincode will be called and executed.
+============================================
+let method = ret.fnc;
+        if(!method){
+            console.info(`no function of name: ${ret.fnc}`);    
+        } 
+        try{
+            
+            shim.success(await method(stub, ret.params));
+
+        } catch(err){
+            console.log(err);
+            return shim.error(err);
+        }
+================================================
+Now, we need to ditry our hands with real business logic in each of the function.
+
+
+

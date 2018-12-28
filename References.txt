@@ -8,3 +8,8 @@ git clone https://github.com/hyperledger/education.git
 
 3. EDx Course - very good
 https://courses.edx.org/courses/course-v1:LinuxFoundationX+LFS171x+3T2017/courseware/f0db5224eb0e4bbb8cc1e93a6819012c/76a52d35a9f848d7a6313e7a45c4e1db/?child=first
+
+4. Node Chaincode Lib
+https://fabric-shim.github.io/release-1.3/index.html
+https://hyperledger-fabric.readthedocs.io/en/release-1.3/chaincode4ade.html
+https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html
