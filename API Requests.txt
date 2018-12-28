@@ -23,8 +23,8 @@ curl -s -X POST \
 
 Query:
 curl -s -X GET \
-  "http://localhost:4000/channels/mychannel/chaincodes/mycc?peer=peer0.org1.example.com&fcn=query&args=%5B%22a%22%5D" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU2Mzk1NjcsInVzZXJuYW1lIjoibmFnZXNoIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU2MDM1Njd9.umXjsk_EuiK6GQa2DiMWOh5NeEe5_khylECWb1Q-q8g" \
+  "http://localhost:4000/channels/mychannel/chaincodes/recon?peer=peer0.org1.example.com&fcn=getApplication&args=%5B%22ASK_111%22%5D" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NDU5NjE2MzksInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NDU5MjU2Mzl9.Chb077zAJA_yrQ67I2jqobeDqkNrewSiY1Mw_kaqtNY" \
   -H "content-type: application/json"
 
 
