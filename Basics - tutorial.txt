@@ -77,6 +77,38 @@ IOTA:
 the platform entails a generalization of the blockchain protocol (the technology called Tangle) that sits at the backend of the IOTA platform).
 
  
+How to pick Consensus:
+1. When deployed within a single enterprise, or operated by a trusted authority, fully byzantine fault tolerant consensus might be considered unnecessary and an excessive drag on performance and throughput. In situations such as that, a crash fault-tolerant (CFT) consensus protocol might be more than adequate
+2. Multi-party, decentralized use case, a more traditional byzantine fault tolerant (BFT) consensus protocol might be required
+
+
+Modularity:
+1. pluggable ordering service
+2. pluggable membership service provider
+3. optional peer-to-peer gossip service
+4. Smart contracts (“chaincode”)
+5. The ledger
+6. A pluggable endorsement and validation policy enforcement
+
+Smart Contracts:
+1. many smart contracts run concurrently in the network
+2. they may be deployed dynamically
+3. application code should be treated as untrusted, potentially even malicious
+4. Uses execute-order-validate rather than order-execute architecture (validates and orders transactions then propagates them to all peer nodes)
+5. application-specific endorsement policy
+
+Consensus:
+1. Fabric offers a CFT ordering service implemented with Kafka and Zookeeper. 
+
+What’s new in v1.4:
+1. Serviceability and operations improvements
+	The Operations Service: The new RESTful operations service provides operators with three services to monitor and manage peer and orderer node operations:
+	/logspec - get and set the logging level
+	/healthz - check orderer and node liveness
+	/metrics - operational metrics
+
+
+
 
 
 

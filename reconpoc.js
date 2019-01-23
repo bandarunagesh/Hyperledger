@@ -152,7 +152,7 @@ async getAllApplications(stub,args,thisClass){
     }
      
 }
-async getInfrastructure(stub,agrs,thisClass){
+async getInfrastructure(stub,args,thisClass){
     console.info('================= Query Infra Started =========')
     let servername = args[0].toLowerCase();
     if (!servername){

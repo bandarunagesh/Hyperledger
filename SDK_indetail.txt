@@ -1,0 +1,17 @@
+Fabri SDK preparation:
+
+SDK Does have below files to be configured:
+	app.js
+	config.js
+	package.json
+	
+Let's talk about config.js
+	1. it defines the things to run 'fabric-client' and the required parameters/values
+	2. we should be having the 'fabric-client' in node_modules
+	3. it uses network_config.yml to check the different details like endorsment peer etc.
+	
+	setConfigSetting:
+		this setting is used to pass diffrent files required to operate fabric client, like 'netowrk_config.yml', 'org1.yaml', 'org2.yaml'
+	
+	addConfigFile:
+		we need to override the default setting of the client by providng the current 'config.js' file location, so fabric client uses this cofiguration and ignore defult one.

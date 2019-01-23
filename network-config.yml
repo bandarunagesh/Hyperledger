@@ -1,0 +1,173 @@
+network-config.yml
+
+network connection profile:
+#Provides informations to the client applicaiton about the target blockchain network
+name: "blockchainpoc"
+
+#provide network type(SDK simply ignore this and let it process by fabric application)
+x-type: "hlfv1"
+
+#describe what is the purpose of the target network
+description: "demonstrate block chain capablities"
+
+#SDK version
+version: "1.0"
+
+# If we are creating the channel from the SDK then this configuration is not required, usually channels will be created from SDK
+channels:
+    #Define Chnnel name:
+    patientchannel:
+
+    #Define orderer name:
+    orderers:
+        - orderer.service.com
+    #Define permissions/roles for peers:
+    peers:
+        peer0.provider1.com:
+        #will this peer be sent transaction proposals for endorsement
+        #The peer must have the chaincode installed
+        #The SDK can also use this property to decide which peers to send the chaincode install 
+        endorsingPeer: true 
+        
+        #this peer be sent query proposals
+        #The peer must have the chaincode installed
+        #The SDK can also use this property to decide which peers to send the chaincode install 
+        chaincodeQuery: true
+        
+        #this peer be sent query proposals that do not require chaincodes
+        #queryBlock(), queryTransaction(), etc.
+        ledgerQuery: true
+        
+        #this peer be the target of the SDK's listener registration
+        #All peers can produce events but the app typically only needs to connect to one to listen to events
+        eventSource: true
+
+        peer1.provider1.com:
+        endorsingPeer: false
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: false
+
+
+        peer0.provider2.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+        
+        peer1.provider2.com:
+        endorsingPeer: false
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: false
+        
+    #what chaincodes are expected to exist on this channel?    
+    #The application can use this information to validate that the target peers are in the expected state by comparing
+    # this list with the query results of getInstalledChaincodes() and getInstantiatedChaincodes()
+    chaincodes:    
+      - patient:v0    
+      
+# list of participating organizations in this network
+organizations:
+
+    provider1:
+        mspid: provider1MSP
+        
+        peers:
+          - peer0.provider1.com
+          - peer1.provider1.com
+         
+        #issue certificates 
+        certificateAuthorities:
+          - ca-provider1 
+        
+        #Admin user public/private key to be used while doing below activities:
+        #creating/updating channel
+        #installing/instantiating chaincode
+        #This method is not recommend in production, as we can not expose the sensitive information. SDK should set the org admin identity via API
+        adminPrivateKey:
+            path: artifacts/channel/crypto-config/peerOrganizations/provider1/users/Admin@org1.example.com/msp/keystore/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8_sk
+        signedCert:
+            path: artifacts/channel/crypto-config/peerOrganizations/provider1/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+            
+            
+            
+      
+    provider2:
+    mspid: provider2MSP
+    peers:
+      - peer0.provider2.com
+      - peer1.provider2.com
+    certificateAuthorities:
+      - ca-provider2
+    adminPrivateKey:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider2/users/Admin@org2.example.com/msp/keystore/1995b11d6573ed3be52fcd7a5fa477bc0f183e1f5f398c8281d0ce7c2c75a076_sk
+    signedCert:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider2/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem
+      
+#All GRPCS definitions
+# List of orderers to send transaction and channel create/update requests to.
+orderers:
+  orderer.service.com:
+    url: grpcs://localhost:7050
+    grpcOptions:
+      ssl-target-name-override: orderer.service.com
+    tlsCACerts:
+      path: artifacts/channel/crypto-config/ordererOrganizations/service.com/orderers/orderer.service.com/tls/ca.crt
+ 
+ peers:
+  peer0.provider1.com:
+    # this URL is used to send endorsement and query requests
+    url: grpcs://localhost:7051
+
+    grpcOptions:
+      ssl-target-name-override: peer0.provider1.com
+    tlsCACerts:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider1/peers/peer0.provider1.com/tls/ca.crt
+
+  peer1.provider1.com:
+    url: grpcs://localhost:7056
+    grpcOptions:
+      ssl-target-name-override: peer1.org1.example.com
+    tlsCACerts:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider1/peers/peer1.provider1.com/tls/ca.crt
+
+  peer0.provider2.com:
+    url: grpcs://localhost:8051
+    grpcOptions:
+      ssl-target-name-override: peer0.org2.example.com
+    tlsCACerts:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider2/peers/peer0.provider2.com/tls/ca.crt
+
+  peer1.provider2.com:
+    url: grpcs://localhost:8056
+    eventUrl: grpcs://localhost:8058
+    grpcOptions:
+      ssl-target-name-override: peer1.org2.example.com
+    tlsCACerts:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider2/peers/peer1.provider2.com/tls/ca.crt
+      
+#This is pluggable, orginizatios can use their own certificate authorities(Integrated with LDAP), if so we can ignore this configuration      
+certificateAuthorities:
+    ca-provider1:
+    url: https://localhost:7054
+
+    #Fabric CA support dynamic enrollment, this needs to be done by Admins  
+    registrar:
+      - enrollId: admin
+        enrollSecret: adminpw
+    
+    caName: ca-provider1
+    
+    ca-provider2:
+    url: https://localhost:8054
+    httpOptions:
+      verify: false
+    tlsCACerts:
+      path: artifacts/channel/crypto-config/peerOrganizations/provider2/ca/ca.provider2.com-cert.pem
+    registrar:
+      - enrollId: admin
+        enrollSecret: adminpw
+    # [Optional] The optional name of the CA.
+    caName: ca-provider2
+
