@@ -35,3 +35,11 @@ https://medium.com/codefactory/angular2-s3-love-deploy-to-cloud-in-6-steps-3f312
 
 10. REST API for Fabric
 https://hackernoon.com/setting-up-restful-api-server-for-hyperledger-fabric-with-nodejs-sdk-a4642edaf98e
+
+11. Hyperledger Monitoring
+https://medium.com/coinmonks/tool-to-measure-blockchain-performance-hyperledger-caliper-f192adfba52
+https://github.com/xuchenhao001/hyperlook
+https://github.com/hyperledger/cello-analytics/tree/master/monitor
+
+12. Multi Chaincode Deployment
+https://www.skcript.com/svr/setting-hyperledger-fabric-network-multiple-chaincodes-channels/

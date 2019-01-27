@@ -100,6 +100,13 @@ Smart Contracts:
 Consensus:
 1. Fabric offers a CFT ordering service implemented with Kafka and Zookeeper. 
 
+What's new in v1.3:
+1. MSP Implementation with Identity Mixer
+2. Setting key-level endorsement policies
+3. Query the CouchDB State Database With Pagination
+4. Chaincode for Developers
+5. Peer channel-based event services
+
 What’s new in v1.4:
 1. Serviceability and operations improvements
 	The Operations Service: The new RESTful operations service provides operators with three services to monitor and manage peer and orderer node operations:
