@@ -43,3 +43,18 @@ https://github.com/hyperledger/cello-analytics/tree/master/monitor
 
 12. Multi Chaincode Deployment
 https://www.skcript.com/svr/setting-hyperledger-fabric-network-multiple-chaincodes-channels/
+
+13. Host in Kubernetes
+https://www.techracers.com/blogs/hyperledger-fabric-cluster-kubernetes/
+
+14. How JWT works
+https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
+
+15. Energy Saving through blockchain
+https://developer.ibm.com/patterns/decentralized-energy-hyperledger-composer/
+https://www.ibm.com/case-studies/energy-blockchain-labs-inc
+https://github.com/IBM/Decentralized-Energy-Composer?cm_sp=IBMCode-_-decentralized-energy-hyperledger-composer-_-Get-the-Code
+
+16. Hash Functions and usage in blockchain - very good visual tutorial
+https://anders.com/blockchain/
+https://github.com/anders94/blockchain-demo/
