@@ -58,3 +58,8 @@ https://github.com/IBM/Decentralized-Energy-Composer?cm_sp=IBMCode-_-decentraliz
 16. Hash Functions and usage in blockchain - very good visual tutorial
 https://anders.com/blockchain/
 https://github.com/anders94/blockchain-demo/
+
+17. Using Kafka Consensus
+https://github.com/skcript/Kafka-Fabric-Network
+https://dev.to/presto412/hyperledger-fabric-transitioning-from-development-to-production-4dch
+https://codeburst.io/the-abcs-of-kafka-in-hyperledger-fabric-81e6dc18da56
