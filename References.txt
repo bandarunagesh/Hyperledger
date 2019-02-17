@@ -59,15 +59,15 @@ https://github.com/IBM/Decentralized-Energy-Composer?cm_sp=IBMCode-_-decentraliz
 https://anders.com/blockchain/
 https://github.com/anders94/blockchain-demo/
 
-<<<<<<< HEAD
-17. Hyperledger Composer Examples
-https://github.com/ronaldlong46/hyperledger-land-tracking
-https://github.com/cktang88/blockchain-hackathon
-https://github.com/aprilsnows/hyperledger-composer-supply-chain-network
-https://medium.com/coinmonks/developer-tutorial-for-creating-a-hyperledger-composer-solution-348f10e4898a
-=======
 17. Using Kafka Consensus
 https://github.com/skcript/Kafka-Fabric-Network
 https://dev.to/presto412/hyperledger-fabric-transitioning-from-development-to-production-4dch
 https://codeburst.io/the-abcs-of-kafka-in-hyperledger-fabric-81e6dc18da56
->>>>>>> 64d02533346dfe09d7e1265b09b47378826e39ee
+
+
+18. Hyperledger Composer Examples
+https://github.com/ronaldlong46/hyperledger-land-tracking
+https://github.com/cktang88/blockchain-hackathon
+https://github.com/aprilsnows/hyperledger-composer-supply-chain-network
+https://medium.com/coinmonks/developer-tutorial-for-creating-a-hyperledger-composer-solution-348f10e4898a
+
