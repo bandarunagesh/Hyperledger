@@ -1,0 +1,240 @@
+Operating Systems: Ubuntu Linux 14.04 / 16.04 LTS (both 64-bit), or Mac OS 10.12
+Docker Engine: Version 17.03 or higher
+Docker-Compose: Version 1.8 or higher
+Node: 8.9 or higher (note version 9 and higher is not supported)
+npm: v5.x
+git: 2.9.x or higher
+Python: 2.7.x
+A code editor of your choice, we recommend VSCode.
+
+**If installing Hyperledger Composer using Linux, be aware of the following advice:
+
+Login as a normal user, rather than root.
+Do not su to root.
+When installing prerequisites, use curl, then unzip using sudo.
+Run prereqs-ubuntu.sh as a normal user. It may prompt for root password as some of it's actions are required to be run as root.
+Do not use npm with sudo or su to root to use it.
+Avoid installing node globally as root.**
+
+
+
+1. Run below commands
+
+
+Setting permission for installation folder
+
+npm config set prefix /home/<username>/
+
+npm install npm@5.6.0 -g
+
+1. Essential CLI tools
+npm install -g composer-cli@0.20
+
+2. REST Server
+npm install -g composer-rest-server@0.20
+
+3. generating application assets
+npm install -g generator-hyperledger-composer@0.20
+
+4. Yeoman is a tool for generating applications
+npm install  yo@latest
+
+5. Install Playground
+npm install -g composer-playground@0.20
+
+Install Hyperledger Fabric
+curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.tar.gz
+
+tar -xvf fabric-dev-servers.tar.gz
+
+d ~/fabric-dev-servers
+
+export FABRIC_VERSION=hlfv12
+
+./downloadFabric.sh
+
+docker rm -f $(docker ps -aq)
+ ./startFabric.sh
+ 
+ ./createPeerAdminCard.sh
+ 
+nano ~/.bash_profile
+### Enter below lines in the nano editor###
+PATH="$PATH:$HOME/bin"
+########
+
+source ~/.bash_profile
+
+composer-playground
+
+#Go to Local host and you should be seeing composer web console
+http://localhost:8080/
+
+#You should see the PeerAdmin@hlfv1 Card you created with the createPeerAdminCard script on your "My Business Networks" screen in the web app: if you don't see this, you may not have correctly started up your runtime!
+
+
+How to create project in Composer
+Step One: Open the Hyperledger Composer Playground
+Step Two: Creating a new business network
+
+1. Click Deploy a new business network under the Web Browser heading to get started.
+
+2. The new business network needs a name, let's call it tutorial-network.
+
+3. Optionally, you can enter a description for your business network.
+
+4. Next we must select a business network to base ours on, because we want to build the network from scratch, click empty-business-network.
+
+5. Now that our network is defined, click Deploy.
+
+Step Three: Connecting to the business network
+
+To connect to our business network click Connect now under our business network card.
+
+Step Four: Adding a model file
+Click on 'Model File' (models/sample.cto) and replace with below content:
+
+/**
+ * My commodity trading network
+ */
+namespace org.example.mynetwork
+asset Commodity identified by tradingSymbol {
+    o String tradingSymbol
+    o String description
+    o String mainExchange
+    o Double quantity
+    --> Trader owner
+}
+participant Trader identified by tradeId {
+    o String tradeId
+    o String firstName
+    o String lastName
+}
+transaction Trade {
+    --> Commodity commodity
+    --> Trader newOwner
+}
+
+
+Step Five: Adding a transaction processor script file
+Click on 'Script file' (lib/sample.js) and replace with below content:
+
+/**
+ * Track the trade of a commodity from one trader to another
+ * @param {org.example.mynetwork.Trade} trade - the trade to be processed
+ * @transaction
+ */
+async function tradeCommodity(trade) {
+    trade.commodity.owner = trade.newOwner;
+    let assetRegistry = await getAssetRegistry('org.example.mynetwork.Commodity');
+    await assetRegistry.update(trade.commodity);
+}
+
+
+
+Step Six: Adding a Access Control file
+Clear the content in ACL (permissions.acl) and update below content
+
+
+/**
+ * Sample access control list.
+ */
+rule EverybodyCanReadEverything {
+    description: "Allow all participants read access to all resources"
+    participant: "org.example.mynetwork.Trader"
+    operation: READ
+    resource: "org.example.mynetwork.*"
+    action: ALLOW
+}
+
+rule EverybodyCanSubmitTransactions {
+    description: "Allow all participants to submit transactions"
+    participant: "org.example.mynetwork.Trader"
+    operation: CREATE
+    resource: "org.example.mynetwork.Commodity"
+    action: ALLOW
+}
+
+rule OwnerHasFullAccessToTheirAssets {
+    description: "Allow all participants full access to their assets"
+    participant(p): "org.example.mynetwork.Trader"
+    operation: ALL
+    resource(r): "org.example.mynetwork.Commodity"
+    condition: (r.owner.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule SystemACL {
+    description: "System ACL to permit all access"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+
+Step Seven: Deploying the updated business network
+Click Deploy changes to upgrade the business network.
+
+Step Eight: Testing the business network definition
+
+Step Nine: Creating participants
+
+1. Ensure that you have the Trader tab selected on the left, and click Create New Participant in the upper right.
+
+{
+  "$class": "org.example.mynetwork.Trader",
+  "tradeId": "TRADER1",
+  "firstName": "Jenny",
+  "lastName": "Jones"
+}
+
+
+{
+  "$class": "org.example.mynetwork.Trader",
+  "tradeId": "TRADER2",
+  "firstName": "Amy",
+  "lastName": "Williams"
+}
+
+Step Ten: Creating an asset
+
+Click the Commodity tab under Assets and click Create New Asset.
+
+{
+  "$class": "org.example.mynetwork.Commodity",
+  "tradingSymbol": "ABC",
+  "description": "Test commodity",
+  "mainExchange": "Euronext",
+  "quantity": 72.297,
+  "owner": "resource:org.example.mynetwork.Trader#TRADER1"
+}
+
+Step Eleven: Transferring the commodity between the participants
+Click the Submit Transaction button on the left.
+
+{
+  "$class": "org.example.mynetwork.Trade",
+  "commodity": "resource:org.example.mynetwork.Commodity#ABC",
+  "newOwner": "resource:org.example.mynetwork.Trader#TRADER2"
+}
+
+
+
+

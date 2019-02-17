@@ -1,0 +1,15 @@
+Steps to follow:
+Start Fabric --> Prepare Fabric --> Deploy .BNA --> Generate Admin.card --> Start REST server --> Generate Angular App
+
+1. Start Hyperledger Fabric running on your local machine
+
+cd ~/fabric-dev-servers
+export FABRIC_VERSION=hlfv11
+./startFabric.sh
+./createPeerAdminCard.sh
+
+composer card list
+
+2. Prepare the Hyperledger Fabric peers
+composer network install --card PeerAdmin@hlfv1 --archiveFile tutorial-network@0.0.1.bna
+
