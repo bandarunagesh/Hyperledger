@@ -1,0 +1,182 @@
+1. Create project
+yo hyperledger-composer:businessnetwork
+
+2. If you see you not found then run below steps
+npm cache clean
+sudo npm rm -g yo
+npm cache clean
+sudo npm install -g yo
+
+3. Make the destination directory writable by yo
+sudo chmod -R 777 .
+
+3. You will ask steps, enter below
+############################
+Business network name: tutorial-network
+Description: My first network
+Author: Your Name
+Author email: your email
+License: Press Enter
+Namespace: org.example.mynetwork
+Do you want to generate an empty template network? select No
+
+############################
+
+4. You should see below results:
+ create package.json
+   create README.md
+   create models/org.example.mynetwork.cto
+   create permissions.acl
+   create .eslintrc.yml
+   create features/sample.feature
+   create features/support/index.js
+   create test/logic.js
+   create lib/logic.js
+
+5. Explanation of the files
+
+A business network is made up of assets, participants, transactions, access control rules, and optionally events and queries. In the skeleton business network created in the previous steps, there is a model (.cto) file which will contain the class definitions for all assets, participants, and transactions in the business network. The skeleton business network also contains an access control (permissions.acl) document with basic access control rules, a script (logic.js) file containing transaction processor functions, and a package.json file containing business network metadata.
+
+6. Open the '/opt/tutorial-network/models/org.example.mynetwork.cto' model file.
+Clear the content and update below:
+
+/**
+ * My commodity trading network
+ */
+namespace org.example.mynetwork
+asset Commodity identified by tradingSymbol {
+    o String tradingSymbol
+    o String description
+    o String mainExchange
+    o Double quantity
+    --> Trader owner
+}
+participant Trader identified by tradeId {
+    o String tradeId
+    o String firstName
+    o String lastName
+}
+transaction Trade {
+    --> Commodity commodity
+    --> Trader newOwner
+}
+
+7. Adding JavaScript transaction logic by opening the file '/opt/tutorial-network/lib/logic.js'
+clear the content and update with below:
+
+/**
+ * Track the trade of a commodity from one trader to another
+ * @param {org.example.mynetwork.Trade} trade - the trade to be processed
+ * @transaction
+ */
+async function tradeCommodity(trade) {
+    trade.commodity.owner = trade.newOwner;
+    let assetRegistry = await getAssetRegistry('org.example.mynetwork.Commodity');
+    await assetRegistry.update(trade.commodity);
+}
+
+8. Adding access control by opening the file '/opt/tutorial-network/permissions.acl'
+clear the content and update with below:
+
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.example.mynetwork.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+9. Generate a business network archive
+From the tutorial-network directory, run the following command:
+cd tutorial-network/
+composer archive create -t dir -n .
+
+10. After the command has run, a business network archive file called tutorial-network@0.0.1.bna has been created in the tutorial-network directory. check by running below command
+ls -l 
+
+11. Deploying the business network
+Copy the file startFabric.sh, stopFabric.sh, _loader.sh, creatPeerAdminCard.sh, fabric-scripts folder from fabric-dev-servers folder to tutorial-network folder
+cp stopFabric.sh ./tutorial-network/
+cp stopFabric.sh ./tutorial-network/
+cp _loader.sh ./tutorial-network/
+cp createPeerAdminCard.sh ./tutorial-network/
+
+12. Run the below commands:
+./startFabric.sh
+./createPeerAdminCard.sh
+
+13. Deploy the business network
+composer network install --card PeerAdmin@hlfv1 --archiveFile tutorial-network@0.0.1.bna
+
+14. Start the business network
+composer network start --networkName tutorial-network --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+
+15. Import network admin card
+composer card import --file networkadmin.card
+
+16. Verification of business network deployment
+composer network ping --card admin@tutorial-network
+
+17. run the composer playground
+composer-playground
+ 
+18. You can now go to 'http://localhost:8080' and see the tutorial-network is created
+
+19. Generating a REST server
+composer-rest-server
+
+20 . It will ask few questions, answer carefully
+Enter the name of the business network card to use: admin@tutorial-network
+Specfiy if you want to use namespace in the generated REST API: nerver use namespaces
+Specfiy if you want to use an API key to secure the REST API: N
+Specfiy if you want to enable authentication for the REST API using Passport: N
+Specfiy if you want to enable the explorer test interface: Y
+Specfiy a key if you want to enable dynamic logging: <just press enter>
+Specfiy if you want to enable event publication over WebSockets: Y
+Specfiy if you want to enable TLS security for the REST API: N
+
+21. Now you can access the composer API though 'http://localhost:3000'
+
+22. Generating an application
+yo hyperledger-composer:angular
+
+23. Answer below question when asked
+
+do you want to connect a running business network: Y
+Project Name: <Name of the application>
+Description: <any description>
+Author Name: <Your Name>
+Author email: <Your email>
+License: <Click Enter>
+Name of the business card: admin@tutorial-network
+Do you want to generate a new REST API or connect to an existing REST API? Connect to an existing REST API
+Rest Server Address: http://localhost
+Rest Server Port: 3000
+Should namespace be used in the generated REST API? Namespace are not used
+
+
+24. Go to angular project directory created i.e 'angular-app'
+cd angular-app
+
+25. run below command to start application
+npm start
+
+26. Now you should see an message saying server running in 'http:\\0.0.0.0:4200'
+Go to Ubuntu and Open the 'http:\\localhost:4200'
+
+
+
+
+
+

@@ -1,0 +1,70 @@
+To create a successful voting application, you need to ensure that the votes can never be changed or altered. A blockchain’s immutability provides this assurance. In this tutorial, you’ll use the Hyperledger Composer Playground and some provided sample code to create, deploy locally, and experiment with a prototype for a secure and fair voting application.
+
+Go to the Hyperledger Composer Playground.
+Click Let’s Blockchain!
+Click Deploy a new business network.
+On the page that appears, scroll down to step 2 and click empty-business-network.
+Click Deploy.
+Click Connect now.
+
+1. Click Model File in the left navigator.
+
+/*
+  Write your model definitions here
+ */
+namespace org.acme.voting
+
+participant voter identified by voterID {
+  o String voterID
+  o String fullName
+}
+
+asset ifVoted identified by voterID {
+  o String voterID
+  o Boolean votedOrNot
+}
+
+asset candidateVote identified by politicalParty {
+  o String politicalParty
+  o Integer totalVote
+}
+transaction vote {
+  --> candidateVote candidateVoteAsset
+  --> ifVoted ifVotedAsset
+}
+
+2. On the “Add a file” panel, select Script File and click Add.
+
+'use strict';
+/*
+  Write your transaction processor functions here
+ */
+
+/*
+  Sample transaction
+  @param {org.acme.voting.vote} vote
+  @transaction
+ */
+function vote(tx) {
+    if (!tx.ifVotedAsset.votedOrNot) {
+        tx.candidateVoteAsset.totalVote = tx.candidateVoteAsset.totalVote + 1;
+        return getAssetRegistry('org.acme.voting.candidateVote')
+            .then(function (assetRegistry) {
+                return assetRegistry.update(tx.candidateVoteAsset);
+            })
+            .then(function () {
+                return getAssetRegistry('org.acme.voting.ifVoted')
+                    .then(function (assetRegistry) {
+                        tx.ifVotedAsset.votedOrNot = true;
+                        return assetRegistry.update(tx.ifVotedAsset);
+                    })
+            });
+    } else {
+        throw new Error('Vote already submitted!');
+    }
+}
+
+3. Click the Test tab, select Voter in the left nav, and then click Create New Participant.
+4. Enter the voter’s ID after the hash sign, and enter the voter’s name. Add additional IDs and names as needed. Click Create New.
+5. Now add one or more assets. In the left nav, select candidateVote and click Create New Asset. When prompted, add a political party name. Add additional political party names as needed. Click Create New.
+6. In the left nav, select ifVoted and click Create New Asset. When prompted, add the voter ID that you entered in step 2. Repeat this step for all voters you added. Click Create New.

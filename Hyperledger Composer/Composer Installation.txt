@@ -1,0 +1,115 @@
+Operating Systems: Ubuntu Linux 14.04 / 16.04 LTS (both 64-bit), or Mac OS 10.12
+Docker Engine: Version 17.03 or higher
+Docker-Compose: Version 1.8 or higher
+Node: 8.9 or higher (note version 9 and higher is not supported)
+npm: v5.x
+git: 2.9.x or higher
+Python: 2.7.x
+A code editor of your choice, we recommend VSCode.
+
+**If installing Hyperledger Composer using Linux, be aware of the following advice:
+
+Login as a normal user, rather than root.
+Do not su to root.
+When installing prerequisites, use curl, then unzip using sudo.
+Run prereqs-ubuntu.sh as a normal user. It may prompt for root password as some of it's actions are required to be run as root.
+Do not use npm with sudo or su to root to use it.
+Avoid installing node globally as root.**
+
+
+
+1. If you have VMBox then you need to follow this step. Install Net tools in interact with Ubuntu from Host System
+
+sudo apt install net-tools
+
+2. Install Curl to download the files from internet
+
+sudo apt-get install curl
+
+3. Best practice to install softwares in /opt folder, but if you wish to install in HOME directory then follow below step.
+Setting permission for installation folder
+
+npm config set prefix /home/<username>/
+
+
+4. Move to /opt folder
+cd /opt
+
+5. Install pre-requisites
+sudo curl -O https://hyperledger.github.io/composer/latest/prereqs-ubuntu.sh
+
+sudo chmod u+x prereqs-ubuntu.sh
+
+sudo ./prereqs-ubuntu.sh
+
+6. If your installation sucessful then you see this message.
+Node:           v8.15.0
+npm:            6.4.1
+Docker:         Docker version 18.09.2, build 6247962
+Docker Compose: docker-compose version 1.13.0, build 1719ceb
+Python:         Python 2.7.15rc1
+
+
+7. If you have any issues with the NPM then user below.
+sudo apt install npm
+
+Note: Incase if any of the below installation throws error then you need to run commands with sudo
+8. Essential CLI tools
+npm install -g composer-cli@0.20
+
+9. REST Server
+npm install -g composer-rest-server@0.20
+
+10. generating application assets
+npm install -g generator-hyperledger-composer@0.20
+
+11. Yeoman is a tool for generating applications
+npm install  yo@latest
+
+12. Install Playground
+npm install -g composer-playground@0.20
+
+13. Install Hyperledger Fabric
+mkdir ~/fabric-dev-servers && cd ~/fabric-dev-servers
+
+curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.tar.gz
+
+14. Unizip the files
+tar -xvf fabric-dev-servers.tar.gz
+
+15. move to the dev servers directory
+cd ~/fabric-dev-servers
+
+16. Export path to user by system, so it recognize the commands
+export FABRIC_VERSION=hlfv12
+
+17. Download the fabric docker images
+./downloadFabric.sh
+
+18. Kill any existing running dockers
+docker rm -f $(docker ps -aq)
+
+19. Start the fabric network
+ ./startFabric.sh
+ 
+20. Create admin card to interact with network
+ ./createPeerAdminCard.sh
+ 
+21. If you are running all the commands in HOME directory then you need to run below command. 
+nano ~/.bash_profile
+
+### Enter below lines in the nano editor###
+PATH="$PATH:$HOME/bin"
+########
+
+source ~/.bash_profile
+
+22. Run the Composer Play Gound
+composer-playground
+
+23. Open the Play ground
+#Go to Local host and you should be seeing composer web console
+http://localhost:8080/
+
+#You should see the PeerAdmin@hlfv1 Card you created with the createPeerAdminCard script on your "My Business Networks" screen in the web app: if you don't see this, you may not have correctly started up your runtime!
+
