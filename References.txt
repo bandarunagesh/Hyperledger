@@ -70,4 +70,4 @@ https://github.com/ronaldlong46/hyperledger-land-tracking
 https://github.com/cktang88/blockchain-hackathon
 https://github.com/aprilsnows/hyperledger-composer-supply-chain-network
 https://medium.com/coinmonks/developer-tutorial-for-creating-a-hyperledger-composer-solution-348f10e4898a
-
+https://www.ibm.com/developerworks/cloud/library/cl-deploy-interact-extend-local-blockchain-network-with-hyperledger-composer/index.html

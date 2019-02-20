@@ -57,6 +57,9 @@ Note: Incase if any of the below installation throws error then you need to run 
 8. Essential CLI tools
 npm install -g composer-cli@0.20
 
+Note: Incase if you get any issues even after using sudo, it means your user is not part of the sudo group, run below command to add user to sudo group.
+usermod -aG sudo <usrname>
+
 9. REST Server
 npm install -g composer-rest-server@0.20
 
