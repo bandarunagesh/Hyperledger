@@ -26,71 +26,74 @@ sudo apt install net-tools
 
 sudo apt-get install curl
 
-3. Best practice to install softwares in /opt folder, but if you wish to install in HOME directory then follow below step.
-Setting permission for installation folder
+3. To avoid any complications, please install below steps in Home (~) directory.
 
-npm config set prefix /home/<username>/
+cd ~
 
+4. Install pre-requisites
 
-4. Move to /opt folder
-cd /opt
+curl -O https://hyperledger.github.io/composer/latest/prereqs-ubuntu.sh
+chmod u+x prereqs-ubuntu.sh
+./prereqs-ubuntu.sh
 
-5. Install pre-requisites
-sudo curl -O https://hyperledger.github.io/composer/latest/prereqs-ubuntu.sh
+4.A: logout and loginback
 
-sudo chmod u+x prereqs-ubuntu.sh
+5. Run below command
+node -v && npm -v && docker -v && docker-compose -v && python --version
 
-sudo ./prereqs-ubuntu.sh
+5A you should see below versions.
 
-6. If your installation sucessful then you see this message.
-Node:           v8.15.0
-npm:            6.4.1
-Docker:         Docker version 18.09.2, build 6247962
-Docker Compose: docker-compose version 1.13.0, build 1719ceb
-Python:         Python 2.7.15rc1
+v8.15.0
+6.4.1
+Docker version 18.09.2, build 6247962
+docker-compose version 1.21.2, build a133471
+Python 2.7.15rc1
 
-
-7. If you have any issues with the NPM then user below.
+5B. If you have any issues with the NPM then user below.
 sudo apt install npm
 
-Note: Incase if any of the below installation throws error then you need to run commands with sudo
-8. Essential CLI tools
+5C. Incase if any of the below commands give trouble, then run with sudo
+
+6. Essential CLI tools
 npm install -g composer-cli@0.20
 
-Note: Incase if you get any issues even after using sudo, it means your user is not part of the sudo group, run below command to add user to sudo group.
-usermod -aG sudo <usrname>
-
-9. REST Server
+7. REST Server
 npm install -g composer-rest-server@0.20
 
-10. generating application assets
+8. generating application assets
 npm install -g generator-hyperledger-composer@0.20
 
-11. Yeoman is a tool for generating applications
+9. Yeoman is a tool for generating applications
 npm install  yo@latest
 
-12. Install Playground
+10. Install Playground
 npm install -g composer-playground@0.20
 
-13. Install Hyperledger Fabric
+11. Install Hyperledger Fabric
 mkdir ~/fabric-dev-servers && cd ~/fabric-dev-servers
 
 curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.tar.gz
 
-14. Unizip the files
+12. Unizip the files
 tar -xvf fabric-dev-servers.tar.gz
 
-15. move to the dev servers directory
-cd ~/fabric-dev-servers
-
-16. Export path to user by system, so it recognize the commands
+13. Export path to user by system, so it recognize the commands
 export FABRIC_VERSION=hlfv12
 
-17. Download the fabric docker images
-./downloadFabric.sh
+14. Download the fabric docker images
+sudo ./downloadFabric.sh
 
-18. Kill any existing running dockers
+15. Add user to Dcoker:
+sudo usermod -aG docker ${USER}
+
+16. Re-login
+Logoff and login back
+
+17. Kill any existing running dockers
 docker rm -f $(docker ps -aq)
+
+18. Move to Dev servers path
+cd ~/fabric-dev-servers
 
 19. Start the fabric network
  ./startFabric.sh
@@ -98,19 +101,10 @@ docker rm -f $(docker ps -aq)
 20. Create admin card to interact with network
  ./createPeerAdminCard.sh
  
-21. If you are running all the commands in HOME directory then you need to run below command. 
-nano ~/.bash_profile
-
-### Enter below lines in the nano editor###
-PATH="$PATH:$HOME/bin"
-########
-
-source ~/.bash_profile
-
-22. Run the Composer Play Gound
+21. Run the Composer Play Gound
 composer-playground
 
-23. Open the Play ground
+22. Open the Play ground
 #Go to Local host and you should be seeing composer web console
 http://localhost:8080/
 

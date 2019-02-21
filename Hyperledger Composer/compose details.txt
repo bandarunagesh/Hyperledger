@@ -1,0 +1,36 @@
+composer-cli
+
+generator-hyperledger-composer
+composer-rest-server
+Yeoman
+
+The first time you start up a new runtime, you'll need to run the start script, then generate a PeerAdmin card:
+
+PeerAdmincard: PeerAdmin@hlfv1
+business network definition (BND)
+data model, transaction logic and access control rules
+Yeoman generator to create a skeleton business network
+.cto -  class definitions for all assets, participants, and transactions
+permissions.acl - basic access control rules
+logic.js -  transaction processor functions
+package.json - business network metadata
+
+Hyperledger Composer Modelling Language
+
+packaged into a deployable business network archive (.bna) 
+business network can be deployed to the instance of Hyperledger Fabric
+nstall chaincode to the peer as well as start chaincode on the composerchannel channel
+
+Steps:
+Hyperledger Composer business network to be installed on the peer
+business network can be started
+new participant, identity, and associated card must be created to be the network administrator
+network administrator business network card must be imported for use
+network can then be pinged 
+
+
+Hyperledger Composer can generate a bespoke REST API based on a business network
+ generate an Angular 4 application running against the REST API
+
+composer card list
+ 
