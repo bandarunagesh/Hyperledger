@@ -38,7 +38,9 @@ Do you want to generate an empty template network? select No
 
 A business network is made up of assets, participants, transactions, access control rules, and optionally events and queries. In the skeleton business network created in the previous steps, there is a model (.cto) file which will contain the class definitions for all assets, participants, and transactions in the business network. The skeleton business network also contains an access control (permissions.acl) document with basic access control rules, a script (logic.js) file containing transaction processor functions, and a package.json file containing business network metadata.
 
-6. Open the '/opt/tutorial-network/models/org.example.mynetwork.cto' model file.
+6. Open the '/tutorial-network/models/org.example.mynetwork.cto' model file.
+nano ./tutorial-network/models/org.example.mynetwork.cto
+
 Clear the content and update below:
 
 /**
@@ -62,7 +64,8 @@ transaction Trade {
     --> Trader newOwner
 }
 
-7. Adding JavaScript transaction logic by opening the file '/opt/tutorial-network/lib/logic.js'
+7. Adding JavaScript transaction logic by opening the file './tutorial-network/lib/logic.js'
+nano ./tutorial-network/lib/logic.js
 clear the content and update with below:
 
 /**
@@ -76,7 +79,10 @@ async function tradeCommodity(trade) {
     await assetRegistry.update(trade.commodity);
 }
 
-8. Adding access control by opening the file '/opt/tutorial-network/permissions.acl'
+8. Adding access control by opening the file './tutorial-network/permissions.acl'
+
+nano ./tutorial-network/permissions.acl
+
 clear the content and update with below:
 
 /**
@@ -106,39 +112,32 @@ composer archive create -t dir -n .
 10. After the command has run, a business network archive file called tutorial-network@0.0.1.bna has been created in the tutorial-network directory. check by running below command
 ls -l 
 
-11. Deploying the business network
-Copy the file startFabric.sh, stopFabric.sh, _loader.sh, creatPeerAdminCard.sh, fabric-scripts folder from fabric-dev-servers folder to tutorial-network folder
-cd .. 
-cp startFabric.sh ./tutorial-network
-cp stopFabric.sh ./tutorial-network
-cp _loader.sh ./tutorial-network
-cp createPeerAdminCard.sh ./tutorial-network
-cp -r ./fabric-scripts ./tutorial-network
+10A. Incase if you see any isses with installations need to run with sudo
 
-12. Run the below commands:
-cd tutorial-network/
-sudo ./startFabric.sh
-sudo ./createPeerAdminCard.sh
+11. Run the below commands:
 
-13. Deploy the business network
-sudo composer network install --card PeerAdmin@hlfv1 --archiveFile tutorial-network@0.0.1.bna
+../fabric-dev-servers/startFabric.sh
+../fabric-dev-servers/createPeerAdminCard.sh
 
-14. Start the business network
-sudo composer network start --networkName tutorial-network --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+12. Deploy the business network
+composer network install --card PeerAdmin@hlfv1 --archiveFile tutorial-network@0.0.1.bna
 
-15. Import network admin card
-sudo composer card import --file networkadmin.card
+13. Start the business network
+composer network start --networkName tutorial-network --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+
+14. Import network admin card
+composer card import --file networkadmin.card
 
 16. Verification of business network deployment
-sudo composer network ping --card admin@tutorial-network
+composer network ping --card admin@tutorial-network
 
 17. run the composer playground
-sudo composer-playground
+composer-playground
  
 18. You can now go to 'http://localhost:8080' and see the tutorial-network is created
 
 19. Generating a REST server
-sudo composer-rest-server
+composer-rest-server
 
 20 . It will ask few questions, answer carefully
 Enter the name of the business network card to use: admin@tutorial-network
