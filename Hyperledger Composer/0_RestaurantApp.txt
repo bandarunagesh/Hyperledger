@@ -1,0 +1,248 @@
+1. Clear existing memory details
+cd fabric-dev-servers/
+sudo ./teardownFabric.sh
+sudo ./teardownAllDocker.sh
+
+When prompted select option 1
+
+0. Move to Home
+cd ~
+1. Create project
+sudo yo hyperledger-composer:businessnetwork
+
+2. If you see you not found then run below steps
+npm cache clean
+sudo npm rm -g yo
+npm cache clean
+sudo npm install -g yo
+
+3. Make the destination directory writable by yo
+sudo chmod -R 777 .
+sudo chmod -R 777 . ~
+
+3. You will ask steps, enter below
+############################
+Business network name: restaurantapp
+Description: My first network
+Author: Your Name
+Author email: your email
+License: Press Enter
+Namespace: org.example.sample
+Do you want to generate an empty template network? select No
+
+############################
+
+4. You should see below results:
+ create package.json
+   create README.md
+   create models/org.example.sample.cto
+   create permissions.acl
+   create .eslintrc.yml
+   create features/sample.feature
+   create features/support/index.js
+   create test/logic.js
+   create lib/logic.js
+
+5. Explanation of the files
+
+A business network is made up of assets, participants, transactions, access control rules, and optionally events and queries. In the skeleton business network created in the previous steps, there is a model (.cto) file which will contain the class definitions for all assets, participants, and transactions in the business network. The skeleton business network also contains an access control (permissions.acl) document with basic access control rules, a script (logic.js) file containing transaction processor functions, and a package.json file containing business network metadata.
+
+6. Open the '/restaurantapp/models/org.example.sample.cto' model file.
+nano ./restaurantapp/models/org.example.sample.cto org.example.sample.cto
+
+Clear the content and update below:
+
+namespace org.example.sample
+
+asset varities  identified by id{
+  o String id
+  o food_varities name
+  o Integer quantity
+  o Double cost
+}
+
+participant  customer identified by name {
+    o String name
+    o Double bankBalance
+    o String customerAddress
+}
+
+participant  restaurant identified by name {
+    o String name
+    o Double bankBalance
+    o String customerAddress
+}
+
+
+
+enum food_varities {
+o Chicken_Biryani
+o Mutton_Biryani
+o Ulavacharu_Biryani
+o Roti
+o Dahmakan_Curry
+o Paneer_Butter_Masala
+}
+
+transaction orderfood {
+  o String tokenid
+  o Integer quantity
+  --> restaurant restaurantRef
+  --> customer customerRef
+  --> varities varitiesRef
+}
+
+7. Adding JavaScript transaction logic by opening the file './restaurantapp/lib/logic.js'
+nano ./restaurantapp/lib/logic.js
+clear the content and update with below:
+
+'use strict';
+/**
+* A transaction processor function description
+* @param {org.example.sample.orderfood} parametername -name A human description of the parameter
+* @transaction
+*/
+
+async function ProcessOrder(parametername) {
+
+    // Save the token number
+    let tokenNumber =  parametername.tokenid;
+
+    // Save the available quanitity value of the food item.
+     let oldValue = parametername.varitiesRef.quantity;
+
+    // Save the available bank balance value of the consumer.
+    let oldBankBalanceCustomer = parametername.customerRef.bankBalance;
+
+    // Save the available bank balance value of the restuarant.
+    let oldBankBalanceRestaurant = parametername.restaurantRef.bankBalance;
+
+    // Update the quantity by reducing 1 item ordered
+    parametername.varitiesRef.quantity = oldValue - parametername.quantity;
+
+    // Calculate Order Price
+    costOfOrder = parametername.quantity * parametername.varitiesRef.cost;
+
+    // Get the money from Customer, so his bank balance should be reduced
+    parametername.customerRef.bankBalance = oldBankBalanceCustomer - costOfOrder
+
+    // Deposit the money to Restaruant
+    parametername.restaurantRef.bankBalance = oldBankBalanceRestaurant +  costOfOrder;
+
+    // Record these transactions in blockchain
+
+    // Get the asset registry for the asset.
+    let assetRegistry = await  getAssetRegistry('org.example.sample.varities');
+    await assetRegistry.update(parametername.varitiesRef);
+
+    // Get the participent registory
+    let participantCustomerRegistry = await getParticipantRegistry('org.example.sample.customer');
+    await participantCustomerRegistry.update(parametername.customerRef);
+
+    let participantrestaurantRegistry = await getParticipantRegistry('org.example.sample.restaurant');
+    await participantrestaurantRegistry.update(parametername.restaurantRef);
+   
+
+  }
+8. Adding access control by opening the file './restaurantapp/permissions.acl'
+
+nano ./restaurantapp/permissions.acl
+
+clear the content and update with below:
+
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.example.sample.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+9. Generate a business network archive
+From the restaurantapp directory, run the following command:
+cd restaurantapp
+sudo composer archive create -t dir -n .
+
+10. After the command has run, a business network archive file called restaurantapp@0.0.1.bna has been created in the tutorial-network directory. check by running below command
+ls -l 
+
+10A. Incase if you see any isses with installations need to run with sudo
+
+11. Run the below commands:
+
+sudo ../fabric-dev-servers/startFabric.sh
+sudo ../fabric-dev-servers/createPeerAdminCard.sh
+
+12. Deploy the business network
+sudo composer network install --card PeerAdmin@hlfv1 --archiveFile restaurantapp@0.0.1.bna
+
+13. Start the business network
+sudo composer network start --networkName restaurantapp --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+
+14. Import network admin card
+sudo composer card import --file networkadmin.card
+
+16. Verification of business network deployment
+sudo composer network ping --card admin@restaurantapp
+
+17. run the composer playground
+sudo composer-playground
+ 
+18. You can now go to 'http://localhost:8080' and see the tutorial-network is created
+
+19. Generating a REST server
+sudo composer-rest-server
+
+20 . It will ask few questions, answer carefully
+Enter the name of the business network card to use: admin@restaurantapp
+Specfiy if you want to use namespace in the generated REST API: nerver use namespaces
+Specfiy if you want to use an API key to secure the REST API: N
+Specfiy if you want to enable authentication for the REST API using Passport: N
+Specfiy if you want to enable the explorer test interface: Y
+Specfiy a key if you want to enable dynamic logging: <just press enter>
+Specfiy if you want to enable event publication over WebSockets: Y
+Specfiy if you want to enable TLS security for the REST API: N
+
+21. Now you can access the composer API though 'http://localhost:3000'
+
+22. Generating an application
+cd ~
+sudo yo hyperledger-composer:angular
+
+23. Answer below question when asked
+
+do you want to connect a running business network: Y
+Project Name: RestaurantAngularApp
+Description: <any description>
+Author Name: <Your Name>
+Author email: <Your email>
+License: <Click Enter>
+Name of the business card: admin@restaurantapp
+Do you want to generate a new REST API or connect to an existing REST API? Connect to an existing REST API
+Rest Server Address: http://localhost
+Rest Server Port: 3000
+Should namespace be used in the generated REST API? Namespace are not used
+
+
+24. Go to angular project directory created i.e 'RestaurantAngularApp'
+cd RestaurantAngularApp
+
+25. run below command to start application
+sudo npm start
+
+26. Now you should see an message saying server running in 'http:\\0.0.0.0:4200'
+Go to Ubuntu and Open the 'http:\\localhost:4200'
+
+
+
