@@ -1,13 +1,14 @@
 1. Clear existing memory details
 cd fabric-dev-servers/
 sudo ./teardownFabric.sh
-sudo ./teardownFabric.sh
 sudo ./teardownAllDocker.sh
 
 When prompted select option 1
 
 1. Create project
-yo hyperledger-composer:businessnetwork
+cd ~
+sudo yo hyperledger-composer:businessnetwork
+
 
 2. If you see you not found then run below steps
 npm cache clean
@@ -32,9 +33,9 @@ Do you want to generate an empty template network? select No
 ############################
 
 4. You should see below results:
- create package.json
+   create package.json
    create README.md
-   create models/org.example.mynetwork.cto
+   create models/org.example.voting.cto
    create permissions.acl
    create .eslintrc.yml
    create features/sample.feature
@@ -42,12 +43,13 @@ Do you want to generate an empty template network? select No
    create test/logic.js
    create lib/logic.js
 
+
 5. Explanation of the files
 
 A business network is made up of assets, participants, transactions, access control rules, and optionally events and queries. In the skeleton business network created in the previous steps, there is a model (.cto) file which will contain the class definitions for all assets, participants, and transactions in the business network. The skeleton business network also contains an access control (permissions.acl) document with basic access control rules, a script (logic.js) file containing transaction processor functions, and a package.json file containing business network metadata.
 
 6. Open the '/tutorial-network/models/org.example.mynetwork.cto' model file.
-nano ./tutorial-network/models/org.example.mynetwork.cto
+nano ./votingapp/models/org.example.voting.cto
 
 Clear the content and update below:
 
@@ -76,24 +78,40 @@ transaction vote {
 }
 
 
-7. Adding JavaScript transaction logic by opening the file './tutorial-network/lib/logic.js'
-nano ./tutorial-network/lib/logic.js
+7. Adding JavaScript transaction logic by opening the file './votingapp/lib/logic.js'
+nano ./votingapp/lib/logic.js
 clear the content and update with below:
 
+'use strict';
+
 /**
- * Track the trade of a commodity from one trader to another
- * @param {org.example.mynetwork.Trade} trade - the trade to be processed
+ * Sample transaction
+ * @param {org.example.voting.vote} vote
  * @transaction
  */
-async function tradeCommodity(trade) {
-    trade.commodity.owner = trade.newOwner;
-    let assetRegistry = await getAssetRegistry('org.example.mynetwork.Commodity');
-    await assetRegistry.update(trade.commodity);
+
+async function vote(tx) {
+    if (!tx.ifVotedAsset.votedOrNot) {
+        tx.candidateVoteAsset.totalVote = tx.candidateVoteAsset.totalVote + 1;
+        return getAssetRegistry('org.example.voting.candidateVote')
+            .then(function (assetRegistry) {
+                return assetRegistry.update(tx.candidateVoteAsset);
+            })
+            .then(function () {
+                return getAssetRegistry('org.example.voting.ifVoted')
+                    .then(function (assetRegistry) {
+                        tx.ifVotedAsset.votedOrNot = true;
+                        return assetRegistry.update(tx.ifVotedAsset);
+                    })
+            });
+    } else {
+        throw new Error('Vote already submitted!');
+    }
 }
 
-8. Adding access control by opening the file './tutorial-network/permissions.acl'
+8. Adding access control by opening the file './votingapp/permissions.acl'
 
-nano ./tutorial-network/permissions.acl
+nano ./votingapp/permissions.acl
 
 clear the content and update with below:
 
@@ -104,7 +122,7 @@ rule Default {
     description: "Allow all participants access to all resources"
     participant: "ANY"
     operation: ALL
-    resource: "org.example.mynetwork.*"
+    resource: "org.example.voting.*"
     action: ALLOW
 }
 
@@ -118,8 +136,8 @@ rule SystemACL {
 
 9. Generate a business network archive
 From the tutorial-network directory, run the following command:
-cd tutorial-network/
-composer archive create -t dir -n .
+cd votingapp/
+sudo composer archive create -t dir -n .
 
 10. After the command has run, a business network archive file called tutorial-network@0.0.1.bna has been created in the tutorial-network directory. check by running below command
 ls -l 
@@ -132,24 +150,24 @@ ls -l
 ../fabric-dev-servers/createPeerAdminCard.sh
 
 12. Deploy the business network
-composer network install --card PeerAdmin@hlfv1 --archiveFile votingapp@0.0.1.bna
+sudo composer network install --card PeerAdmin@hlfv1 --archiveFile votingapp@0.0.1.bna
 
 13. Start the business network
-composer network start --networkName votingapp --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+sudo composer network start --networkName votingapp --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
 
 14. Import network admin card
-composer card import --file networkadmin.card
+sudo composer card import --file networkadmin.card
 
 16. Verification of business network deployment
-composer network ping --card admin@votingapp
+sudo composer network ping --card admin@votingapp
 
 17. run the composer playground
-composer-playground
+sudo composer-playground
  
 18. You can now go to 'http://localhost:8080' and see the tutorial-network is created
 
 19. Generating a REST server
-composer-rest-server
+sudo composer-rest-server
 
 20 . It will ask few questions, answer carefully
 Enter the name of the business network card to use: admin@votingapp
@@ -164,28 +182,28 @@ Specfiy if you want to enable TLS security for the REST API: N
 21. Now you can access the composer API though 'http://localhost:3000'
 
 22. Generating an application
-yo hyperledger-composer:angular
+sudo yo hyperledger-composer:angular
 
 23. Answer below question when asked
 
 do you want to connect a running business network: Y
-Project Name: <Name of the application>
+Project Name: AngularVotingApp
 Description: <any description>
 Author Name: <Your Name>
 Author email: <Your email>
 License: <Click Enter>
-Name of the business card: admin@tutorial-network
+Name of the business card: admin@votingapp
 Do you want to generate a new REST API or connect to an existing REST API? Connect to an existing REST API
 Rest Server Address: http://localhost
 Rest Server Port: 3000
 Should namespace be used in the generated REST API? Namespace are not used
 
 
-24. Go to angular project directory created i.e 'angular-app'
-cd angular-app
+24. Go to angular project directory created i.e 'AngularVotingApp'
+cd AngularVotingApp
 
 25. run below command to start application
-npm start
+sudo npm start
 
 26. Now you should see an message saying server running in 'http:\\0.0.0.0:4200'
 Go to Ubuntu and Open the 'http:\\localhost:4200'
