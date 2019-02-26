@@ -1,71 +1,60 @@
-1. End to End hyperledger overview, interviews, all platforms
-https://courses.edx.org/courses/course-v1:LinuxFoundationX+LFS171x+3T2017/courseware/fc181cbff0d64cee85eafc41d3617d89/f95572c931024f4dbe4945e0a9fb46ec/?child=first
-
-2. Tuna Fish App example:
-https://github.com/hyperledger/education/tree/master/LFS171x/fabric-material/tuna-app
-git clone https://github.com/hyperledger/education.git
-
-
-3. EDx Course - very good
-https://courses.edx.org/courses/course-v1:LinuxFoundationX+LFS171x+3T2017/courseware/f0db5224eb0e4bbb8cc1e93a6819012c/76a52d35a9f848d7a6313e7a45c4e1db/?child=first
-
-4. Node Chaincode Lib
+1. Node Chaincode Lib
 https://fabric-shim.github.io/release-1.3/index.html
 https://hyperledger-fabric.readthedocs.io/en/release-1.3/chaincode4ade.html
 https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html
 
 
-5. deploy angular app into google cloud
+2. deploy angular app into google cloud
 https://medium.com/@asanoop24/deploying-angular-6-app-on-google-app-engine-b6259d4c16c2
 
-6. Common errors and resolutions:
+3. Common errors and resolutions:
 https://medium.com/coinmonks/hyperledger-fabric-composer-errors-solutions-827112a3fce6
 
-7. Multi host deployment:
+4. Multi host deployment:
 https://github.com/olegabu/fabric-starter
 
-8. Books:
+5. Books:
 https://github.com/bitcoinbook/bitcoinbook
 https://github.com/brute4s99/blockchainbooks
 
-9. How to run Node as service in EC2
+6. How to run Node as service in EC2
 https://medium.com/@nishankjaintdk/setting-up-a-node-js-app-on-a-linux-ami-on-an-aws-ec2-instance-with-nginx-59cbc1bcc68c
 https://medium.com/codefactory/angular2-s3-love-deploy-to-cloud-in-6-steps-3f312647a659
 
 
-10. REST API for Fabric
+7. REST API for Fabric
 https://hackernoon.com/setting-up-restful-api-server-for-hyperledger-fabric-with-nodejs-sdk-a4642edaf98e
 
-11. Hyperledger Monitoring
+8. Hyperledger Monitoring
 https://medium.com/coinmonks/tool-to-measure-blockchain-performance-hyperledger-caliper-f192adfba52
 https://github.com/xuchenhao001/hyperlook
 https://github.com/hyperledger/cello-analytics/tree/master/monitor
 
-12. Multi Chaincode Deployment
+9. Multi Chaincode Deployment
 https://www.skcript.com/svr/setting-hyperledger-fabric-network-multiple-chaincodes-channels/
 
-13. Host in Kubernetes
+10. Host in Kubernetes
 https://www.techracers.com/blogs/hyperledger-fabric-cluster-kubernetes/
 
-14. How JWT works
+11. How JWT works
 https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
 
-15. Energy Saving through blockchain
+12. Energy Saving through blockchain
 https://developer.ibm.com/patterns/decentralized-energy-hyperledger-composer/
 https://www.ibm.com/case-studies/energy-blockchain-labs-inc
 https://github.com/IBM/Decentralized-Energy-Composer?cm_sp=IBMCode-_-decentralized-energy-hyperledger-composer-_-Get-the-Code
 
-16. Hash Functions and usage in blockchain - very good visual tutorial
+13. Hash Functions and usage in blockchain - very good visual tutorial
 https://anders.com/blockchain/
 https://github.com/anders94/blockchain-demo/
 
-17. Using Kafka Consensus
+14. Using Kafka Consensus
 https://github.com/skcript/Kafka-Fabric-Network
 https://dev.to/presto412/hyperledger-fabric-transitioning-from-development-to-production-4dch
 https://codeburst.io/the-abcs-of-kafka-in-hyperledger-fabric-81e6dc18da56
 
 
-18. Hyperledger Composer Examples
+15. Hyperledger Composer Examples
 https://github.com/ronaldlong46/hyperledger-land-tracking
 https://github.com/cktang88/blockchain-hackathon
 https://github.com/aprilsnows/hyperledger-composer-supply-chain-network
