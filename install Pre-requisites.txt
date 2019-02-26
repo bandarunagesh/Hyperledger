@@ -9,6 +9,10 @@ sudo apt-get install curl
 
 SSH:
 sudo apt-get install openssh-service
+if there is an issues to install openssh-service, install below alternative
+
+SSH:
+sudo apt install openssh-server
 
 check:
 sudo systemctl status ssh.service

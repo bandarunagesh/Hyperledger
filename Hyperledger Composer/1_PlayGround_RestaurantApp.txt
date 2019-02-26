@@ -1,0 +1,168 @@
+
+How to create project in Composer
+Step One: Open the Hyperledger Composer Playground
+Step Two: Creating a new business network
+
+1. Click Deploy a new business network under the Web Browser heading to get started.
+
+2. The new business network needs a name, let's call it restaurant-play-ground.
+
+3. Enter admin card details like admin@restaurant-play-ground
+
+4. Select empty network 
+
+5. Provide ID  as admin & Secret as adminpw
+
+6. click on deploy
+
+7. Connecting to the business network
+
+To connect to our business network click Connect now under our business network card.
+
+8. Adding a model file
+Click on 'Model File' (models/org.example.empty.cto) and replace with below content:
+
+/**
+ * reate files
+ */
+namespace org.example.empty
+
+asset varities  identified by id{
+  o String id
+  o food_varities name
+  o Integer quantity
+  o Double cost
+}
+
+participant  customer identified by name {
+    o String name
+    o Double bankBalance
+    o String customerAddress
+}
+
+participant  restaurant identified by name {
+    o String name
+    o Double bankBalance
+    o String customerAddress
+}
+
+
+
+enum food_varities {
+o Chicken_Biryani
+o Mutton_Biryani
+o Ulavacharu_Biryani
+o Roti
+o Dahmakan_Curry
+o Paneer_Butter_Masala
+}
+
+transaction orderfood {
+  o String tokenid
+  o Integer quantity
+  --> restaurant restaurantRef
+  --> customer customerRef
+  --> varities varitiesRef
+}
+
+
+9. Adding a transaction processor script file
+Click on 'Script file' (lib/sample.js) and replace with below content:
+
+'use strict';
+/**
+* A transaction processor function description
+* @param {org.example.empty.orderfood} parametername -name A human description of the parameter
+* @transaction
+*/
+
+async function ProcessOrder(parametername) {
+
+    // Save the token number
+    let tokenNumber =  parametername.tokenid;
+
+    // Save the available quanitity value of the food item.
+     let oldValue = parametername.varitiesRef.quantity;
+
+    // Save the available bank balance value of the consumer.
+    let oldBankBalanceCustomer = parametername.customerRef.bankBalance;
+
+    // Save the available bank balance value of the restuarant.
+    let oldBankBalanceRestaurant = parametername.restaurantRef.bankBalance;
+
+    // Update the quantity by reducing 1 item ordered
+    parametername.varitiesRef.quantity = oldValue - parametername.quantity;
+
+    // Calculate Order Price
+    costOfOrder = parametername.quantity * parametername.varitiesRef.cost;
+
+    // Get the money from Customer, so his bank balance should be reduced
+    parametername.customerRef.bankBalance = oldBankBalanceCustomer - costOfOrder
+
+    // Deposit the money to Restaruant
+    parametername.restaurantRef.bankBalance = oldBankBalanceRestaurant +  costOfOrder;
+
+    // Record these transactions in blockchain
+
+    // Get the asset registry for the asset.
+    let assetRegistry = await  getAssetRegistry('org.example.empty.varities');
+    await assetRegistry.update(parametername.varitiesRef);
+
+    // Get the participent registory
+    let participantCustomerRegistry = await getParticipantRegistry('org.example.empty.customer');
+    await participantCustomerRegistry.update(parametername.customerRef);
+
+    let participantrestaurantRegistry = await getParticipantRegistry('org.example.empty.restaurant');
+    await participantrestaurantRegistry.update(parametername.restaurantRef);
+   
+
+  }
+
+
+
+10. Adding a Access Control file
+Clear the content in ACL (permissions.acl) and update below content
+
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.example.empty.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+
+11. Deploying the updated business network
+Click Deploy changes to upgrade the business network.
+
+12. Testing the business network definition
+
+13.: Creating participants
+
+Ensure that you have the customer tab selected on the left, and click Create New Participant in the upper right.
+Ensure that you have the restaruant tab selected on the left, and click Create New Participant in the upper right.
+
+
+14 : Creating an asset
+
+Click the varities tab under Assets and click Create New Asset.
+
+
+15. Trigger transaction
+Click the Submit Transaction button on the left.
+
+
+
+
+
