@@ -62,3 +62,6 @@ https://medium.com/coinmonks/developer-tutorial-for-creating-a-hyperledger-compo
 https://www.ibm.com/developerworks/cloud/library/cl-deploy-interact-extend-local-blockchain-network-with-hyperledger-composer/index.html
 https://blog.mi.hdm-stuttgart.de/index.php/2018/03/31/supply-chain-management-using-blockchain-technology-hands-on-hyperledger-part-1/
 https://blog.mi.hdm-stuttgart.de/index.php/2018/03/31/supply-chain-management-using-blockchain-technology-hands-on-hyperledger-part-2/
+
+16. Consensus
+https://hackernoon.com/consensuspedia-an-encyclopedia-of-29-consensus-algorithms-e9c4b4b7d08f
