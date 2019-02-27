@@ -36,7 +36,10 @@ curl -O https://hyperledger.github.io/composer/latest/prereqs-ubuntu.sh
 chmod u+x prereqs-ubuntu.sh
 ./prereqs-ubuntu.sh
 
-4.A: logout and loginback
+4A. In case if you receive the error saying command not available then run below command first.
+sudo apt-get install software-properties-common
+
+4.B: logout and loginback
 
 5. Run below command
 node -v && npm -v && docker -v && docker-compose -v && python --version
