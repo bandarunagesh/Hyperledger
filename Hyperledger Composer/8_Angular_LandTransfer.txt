@@ -1,0 +1,228 @@
+1. Clear existing memory details
+cd fabric-dev-servers/
+sudo ./teardownFabric.sh
+sudo ./teardownAllDocker.sh
+
+When prompted select option 1
+
+0. Move to Home
+cd ~
+1. Create project
+sudo yo hyperledger-composer:businessnetwork
+
+
+3. You will ask steps, enter below
+############################
+Business network name: landtracking
+Description: My first network
+Author: Your Name
+Author email: your email
+License: Press Enter
+Namespace: org.county.government
+Do you want to generate an empty template network? select No
+
+############################
+
+4. You should see below results:
+   create package.json
+   create README.md
+   create models/org.county.government.cto
+   create permissions.acl
+   create .eslintrc.yml
+   create features/sample.feature
+   create features/support/index.js
+   create test/logic.js
+   create lib/logic.js
+
+5. Explanation of the files
+
+A business network is made up of assets, participants, transactions, access control rules, and optionally events and queries. In the skeleton business network created in the previous steps, there is a model (.cto) file which will contain the class definitions for all assets, participants, and transactions in the business network. The skeleton business network also contains an access control (permissions.acl) document with basic access control rules, a script (logic.js) file containing transaction processor functions, and a package.json file containing business network metadata.
+
+6. Open the '/landtracking/org.county.government.cto' model file.
+nano ./landtracking/models/org.county.government.cto
+
+Clear the content and update below:
+
+namespace org.county.government
+
+participant Citizen identified by aadhar {
+  o String		aadhar
+  o String		firstName
+  o String 		lastName
+  o Double      bankBalance
+}
+
+asset Land identified by landdocnumber {
+  o String 		landdocnumber
+  --> Citizen 	Owner
+}
+
+asset SaleContract identified by SaleID {
+  o String		SaleID
+  --> Land      Land
+  --> Citizen   Seller
+  --> Citizen   Buyer
+  o Double      Price
+}
+
+transaction Sale {
+  --> SaleContract SaleContract
+}
+
+
+7. Adding JavaScript transaction logic by opening the file './landtracking/lib/logic.js'
+nano ./landtracking/lib/logic.js
+clear the content and update with below:
+
+/**
+* Sell land from one citizen to another
+* @param {org.county.government.Sale} sale - the LandSale transaction
+* @transaction
+*/
+
+async function sale(contract){
+  // Get info from contract
+  const buyer = contract.SaleContract.Buyer;
+  const seller = contract.SaleContract.Seller;
+  const price  = contract.SaleContract.Price;
+  const land = contract.SaleContract.Land;
+  
+  // Check if buyer has sufficient funds
+  if(buyer.bankBalance < price){
+    throw new Error('Buyer does not have sufficient funds to complete the sale.');
+  }
+  
+  // Update balance
+  seller.bankBalance += price;
+  buyer.bankBalance  -= price;
+  
+  // Update ownership
+  land.Owner = buyer;
+  
+  // Update property in registry
+  const propertyRegistry = await getAssetRegistry('org.county.government.Land');
+  await propertyRegistry.update(land);
+  
+  // Update seller in registry
+  const sellerRegistry = await getParticipantRegistry('org.county.government.Citizen');
+  await sellerRegistry.update(seller);
+    
+  // Update buyer in registry
+  const buyerRegistry = await getParticipantRegistry('org.county.government.Citizen');
+  await buyerRegistry.update(buyer);
+}
+
+
+
+8. Adding access control by opening the file './landtracking/permissions.acl'
+
+nano ./landtracking/permissions.acl
+
+clear the content and update with below:
+
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.county.government.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+9. Generate a business network archive
+From the landtracking directory, run the following command:
+
+cd landtracking
+
+sudo composer archive create -t dir -n .
+
+
+10. After the command has run, a business network archive file called landtracking@0.0.1.bna has been created in the tutorial-network directory. check by running below command
+ls -l 
+
+10A. Incase if you see any isses with installations need to run with sudo
+
+11. Run the below commands:
+
+sudo ../fabric-dev-servers/startFabric.sh
+sudo ../fabric-dev-servers/createPeerAdminCard.sh
+
+12. Deploy the business network
+sudo composer network install --card PeerAdmin@hlfv1 --archiveFile landtracking@0.0.1.bna
+
+13. Start the business network
+
+sudo composer network start --networkName landtracking --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+
+14. Import network admin card
+
+sudo composer card import --file networkadmin.card
+
+16. Verification of business network deployment
+
+sudo composer network ping --card admin@landtracking
+
+17. run the composer playground
+sudo composer-playground
+ 
+18. You can now go to 'http://localhost:8080' and see the tutorial-network is created
+
+19. Generating a REST server
+
+sudo composer-rest-server
+
+20 . It will ask few questions, answer carefully
+
+Enter the name of the business network card to use: admin@landtracking
+Specfiy if you want to use namespace in the generated REST API: nerver use namespaces
+Specfiy if you want to use an API key to secure the REST API: N
+Specfiy if you want to enable authentication for the REST API using Passport: N
+Specfiy if you want to enable the explorer test interface: Y
+Specfiy a key if you want to enable dynamic logging: <just press enter>
+Specfiy if you want to enable event publication over WebSockets: Y
+Specfiy if you want to enable TLS security for the REST API: N
+
+21. Now you can access the composer API though 'http://localhost:3000'
+
+22. Generating an application (*** Open new Terminal *** )
+
+cd ~
+
+sudo yo hyperledger-composer:angular
+
+23. Answer below question when asked
+
+do you want to connect a running business network: Y
+Project Name: LandRegistrationAngularApp
+Description: <any description>
+Author Name: <Your Name>
+Author email: <Your email>
+License: <Click Enter>
+Name of the business card: admin@landtracking
+Do you want to generate a new REST API or connect to an existing REST API? Connect to an existing REST API
+Rest Server Address: http://localhost
+Rest Server Port: 3000
+Should namespace be used in the generated REST API? Namespace are not used
+
+
+24. Go to angular project directory created i.e 'LandRegistrationAngularApp'
+cd LandRegistrationAngularApp
+
+25. run below command to start application
+sudo npm start
+
+26. Now you should see an message saying server running in 'http:\\0.0.0.0:4200'
+Go to Ubuntu and Open the 'http:\\localhost:4200'
+
+
+

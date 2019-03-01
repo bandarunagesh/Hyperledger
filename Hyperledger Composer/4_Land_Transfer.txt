@@ -1,0 +1,133 @@
+Open the Play ground (localhost:8080)
+
+1. Click Deploy a new business network under the Web Browser heading to get started.
+
+2. The new business network needs a name, let's call it landregistration.
+
+3. Enter admin card details like admin@landregistration
+
+4. Select empty network 
+
+5. Provide ID  as admin & Secret as adminpw
+
+6. click on deploy
+
+7. Connecting to the business network
+
+To connect to our business network click Connect now under our business network card.
+
+8. Adding a model file
+Click on 'Model File' (models/org.example.empty.cto) and replace with below content:
+
+namespace org.example.empty
+
+participant Citizen identified by aadhar {
+  o String		aadhar
+  o String		firstName
+  o String 		lastName
+  o Double      bankBalance
+}
+
+asset Land identified by landdocnumber {
+  o String 		landdocnumber
+  --> Citizen 	Owner
+}
+
+asset SaleContract identified by SaleID {
+  o String		SaleID
+  --> Land      Land
+  --> Citizen   Seller
+  --> Citizen   Buyer
+  o Double      Price
+}
+
+transaction Sale {
+  --> SaleContract SaleContract
+}
+
+
+9. Adding a transaction processor script file
+Click on 'Script file' (lib/sample.js) and replace with below content:
+
+/**
+* Sell land from one citizen to another
+* @param {org.example.empty.Sale} sale - the LandSale transaction
+* @transaction
+*/
+
+async function sale(contract){
+  // Get info from contract
+  const buyer = contract.SaleContract.Buyer;
+  const seller = contract.SaleContract.Seller;
+  const price  = contract.SaleContract.Price;
+  const land = contract.SaleContract.Land;
+  
+  // Check if buyer has sufficient funds
+  if(buyer.bankBalance < price){
+    throw new Error('Buyer does not have sufficient funds to complete the sale.');
+  }
+  
+  // Update balance
+  seller.bankBalance += price;
+  buyer.bankBalance  -= price;
+  
+  // Update ownership
+  land.Owner = buyer;
+  
+  // Update property in registry
+  const propertyRegistry = await getAssetRegistry('org.example.empty.Land');
+  await propertyRegistry.update(land);
+  
+  // Update seller in registry
+  const sellerRegistry = await getParticipantRegistry('org.example.empty.Citizen');
+  await sellerRegistry.update(seller);
+    
+  // Update buyer in registry
+  const buyerRegistry = await getParticipantRegistry('org.example.empty.Citizen');
+  await buyerRegistry.update(buyer);
+}
+
+
+10. Adding a Access Control file
+Clear the content in ACL (permissions.acl) and update below content
+
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.example.empty.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+
+11. Deploying the updated business network
+Click Deploy changes to upgrade the business network.
+
+12. Testing the business network definition
+
+13.: Creating participants
+
+Ensure that you have the customer tab selected on the left, and click Create New Participant in the upper right.
+Ensure that you have the restaruant tab selected on the left, and click Create New Participant in the upper right.
+
+
+14 : Creating an asset
+
+Click the varities tab under Assets and click Create New Asset.
+
+
+15. Trigger transaction
+Click the Submit Transaction button on the left.
+
+

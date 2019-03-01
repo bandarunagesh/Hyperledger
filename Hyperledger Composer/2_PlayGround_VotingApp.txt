@@ -1,0 +1,118 @@
+Open the Play ground (localhost:8080)
+
+1. Click Deploy a new business network under the Web Browser heading to get started.
+
+2. The new business network needs a name, let's call it voting-playground.
+
+3. Enter admin card details like admin@votingplayground
+
+4. Select empty network 
+
+5. Provide ID  as admin & Secret as adminpw
+
+6. click on deploy
+
+7. Connecting to the business network
+
+To connect to our business network click Connect now under our business network card.
+
+8. Adding a model file
+Click on 'Model File' (models/org.example.empty.cto) and replace with below content:
+
+namespace org.example.empty
+
+participant voter identified by voterID {
+  o String voterID
+  o String fullName
+}
+
+asset ifVoted identified by voterID {
+  o String voterID
+  o Boolean votedOrNot
+}
+
+asset candidateVote identified by politicalParty {
+  o String politicalParty
+  o Integer totalVote
+}
+transaction vote {
+  --> candidateVote candidateVoteAsset
+  --> ifVoted ifVotedAsset
+}
+
+
+
+9. Adding a transaction processor script file
+Click on 'Script file' (lib/sample.js) and replace with below content:
+
+'use strict';
+
+/**
+ * Sample transaction
+ * @param {org.example.empty.vote} vote
+ * @transaction
+ */
+
+async function vote(tx) {
+    if (!tx.ifVotedAsset.votedOrNot) {
+        tx.candidateVoteAsset.totalVote = tx.candidateVoteAsset.totalVote + 1;
+        return getAssetRegistry('org.example.empty.candidateVote')
+            .then(function (assetRegistry) {
+                return assetRegistry.update(tx.candidateVoteAsset);
+            })
+            .then(function () {
+                return getAssetRegistry('org.example.empty.ifVoted')
+                    .then(function (assetRegistry) {
+                        tx.ifVotedAsset.votedOrNot = true;
+                        return assetRegistry.update(tx.ifVotedAsset);
+                    })
+            });
+    } else {
+        throw new Error('Vote already submitted!');
+    }
+}
+
+
+10. Adding a Access Control file
+Clear the content in ACL (permissions.acl) and update below content
+
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.example.empty.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+
+11. Deploying the updated business network
+Click Deploy changes to upgrade the business network.
+
+12. Testing the business network definition
+
+13.: Creating participants
+
+Ensure that you have the customer tab selected on the left, and click Create New Participant in the upper right.
+Ensure that you have the restaruant tab selected on the left, and click Create New Participant in the upper right.
+
+
+14 : Creating an asset
+
+Click the varities tab under Assets and click Create New Asset.
+
+
+15. Trigger transaction
+Click the Submit Transaction button on the left.
+
+
