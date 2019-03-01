@@ -1,29 +1,29 @@
-
-How to create project in Composer
-Step One: Open the Hyperledger Composer Playground
-Step Two: Creating a new business network
+Open the Play ground (localhost:8080)
 
 1. Click Deploy a new business network under the Web Browser heading to get started.
 
-2. The new business network needs a name, let's call it tutorial-network.
+2. The new business network needs a name, let's call it trade-network.
 
-3. Optionally, you can enter a description for your business network.
+3. Enter admin card details like admin@tradenetworkplayground
 
-4. Next we must select a business network to base ours on, because we want to build the network from scratch, click empty-business-network.
+4. Select empty network 
 
-5. Now that our network is defined, click Deploy.
+5. Provide ID  as admin & Secret as adminpw
 
-Step Three: Connecting to the business network
+6. click on deploy
+
+7. Connecting to the business network
 
 To connect to our business network click Connect now under our business network card.
 
-Step Four: Adding a model file
-Click on 'Model File' (models/sample.cto) and replace with below content:
+8. Adding a model file
+Click on 'Model File' (models/model.cto) and replace with below content:
 
 /**
  * My commodity trading network
  */
-namespace org.example.mynetwork
+namespace org.example.empty
+
 asset Commodity identified by tradingSymbol {
     o String tradingSymbol
     o String description
@@ -42,23 +42,23 @@ transaction Trade {
 }
 
 
-Step Five: Adding a transaction processor script file
-Click on 'Script file' (lib/sample.js) and replace with below content:
+9. Adding a transaction processor script file
+Click on 'Script file' (lib/script.js) and replace with below content:
 
 /**
  * Track the trade of a commodity from one trader to another
- * @param {org.example.mynetwork.Trade} trade - the trade to be processed
+ * @param {org.example.empty.Trade} trade - the trade to be processed
  * @transaction
  */
 async function tradeCommodity(trade) {
     trade.commodity.owner = trade.newOwner;
-    let assetRegistry = await getAssetRegistry('org.example.mynetwork.Commodity');
+    let assetRegistry = await getAssetRegistry('org.example.empty.Commodity');
     await assetRegistry.update(trade.commodity);
 }
 
 
 
-Step Six: Adding a Access Control file
+10. Adding a Access Control file
 Clear the content in ACL (permissions.acl) and update below content
 
 
@@ -67,25 +67,25 @@ Clear the content in ACL (permissions.acl) and update below content
  */
 rule EverybodyCanReadEverything {
     description: "Allow all participants read access to all resources"
-    participant: "org.example.mynetwork.Trader"
+    participant: "org.example.empty.Trader"
     operation: READ
-    resource: "org.example.mynetwork.*"
+    resource: "org.example.empty.*"
     action: ALLOW
 }
 
 rule EverybodyCanSubmitTransactions {
     description: "Allow all participants to submit transactions"
-    participant: "org.example.mynetwork.Trader"
+    participant: "org.example.empty.Trader"
     operation: CREATE
-    resource: "org.example.mynetwork.Commodity"
+    resource: "org.example.empty.Commodity"
     action: ALLOW
 }
 
 rule OwnerHasFullAccessToTheirAssets {
     description: "Allow all participants full access to their assets"
-    participant(p): "org.example.mynetwork.Trader"
+    participant(p): "org.example.empty.Trader"
     operation: ALL
-    resource(r): "org.example.mynetwork.Commodity"
+    resource(r): "org.example.empty.Commodity"
     condition: (r.owner.getIdentifier() === p.getIdentifier())
     action: ALLOW
 }
@@ -115,52 +115,18 @@ rule NetworkAdminSystem {
 }
 
 
-Step Seven: Deploying the updated business network
+11. Deploying the updated business network
 Click Deploy changes to upgrade the business network.
 
-Step Eight: Testing the business network definition
+12. Testing the business network definition
 
-Step Nine: Creating participants
+13. Creating participants
+Ensure that you have the Trader tab selected on the left, and click Create New Participant in the upper right.
+Ensure that you have the Trader tab selected on the left, and click Create New Participant in the upper right.
 
-1. Ensure that you have the Trader tab selected on the left, and click Create New Participant in the upper right.
+14. Creating an asset
 
-{
-  "$class": "org.example.mynetwork.Trader",
-  "tradeId": "TRADER1",
-  "firstName": "Jenny",
-  "lastName": "Jones"
-}
+Click the Commidity tab under Assets and click Create New Asset.
 
-
-{
-  "$class": "org.example.mynetwork.Trader",
-  "tradeId": "TRADER2",
-  "firstName": "Amy",
-  "lastName": "Williams"
-}
-
-Step Ten: Creating an asset
-
-Click the Commodity tab under Assets and click Create New Asset.
-
-{
-  "$class": "org.example.mynetwork.Commodity",
-  "tradingSymbol": "ABC",
-  "description": "Test commodity",
-  "mainExchange": "Euronext",
-  "quantity": 72.297,
-  "owner": "resource:org.example.mynetwork.Trader#TRADER1"
-}
-
-Step Eleven: Transferring the commodity between the participants
+15. Transferring the commodity between the participants
 Click the Submit Transaction button on the left.
-
-{
-  "$class": "org.example.mynetwork.Trade",
-  "commodity": "resource:org.example.mynetwork.Commodity#ABC",
-  "newOwner": "resource:org.example.mynetwork.Trader#TRADER2"
-}
-
-
-
-
