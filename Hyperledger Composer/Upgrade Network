@@ -1,0 +1,13 @@
+How to Upgrade Changes:
+Step 1: Move to the directory of the project and Open the package.json file and change the version to 0.0.2
+Step 2: Re-generate archive file
+composer archive create --sourceType dir --sourceName . -a emr@0.0.2.bna
+
+Step 3: Install the newly updated business netwrok
+composer network install --card PeerAdmin@hlfv1 --archiveFile emr@0.0.2.bna
+
+Step 4: Upgrade netwrok to new version
+composer network upgrade -c PeerAdmin@hlfv1 -n emr -V 0.0.2
+
+Step 5: Check the current version of business network
+composer network ping -c admin@emr | grep Business
